@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
-namespace JoystickMod
+namespace JoystickMod.Blocks
 {
-    public class Class1
+    public class SteeringScript:Block
     {
+
+
     }
 }
