@@ -8,11 +8,8 @@ namespace JoystickMod
 {
     public class JoyAxis
     {
-
         public int JoyIndex = 0;
         public int AxisIndex = 0;
-        //public bool Flipped = true;
-
 
         /* TUNING:
           * Following properties flip the changed flag on edit.
@@ -60,9 +57,13 @@ namespace JoystickMod
         }
         private bool _invert;
 
-        public bool Smooth { get; set; }
-
-        private bool _changed = true;
+        public float Lerp
+        {
+            get { return _lerp; }
+            set {_lerp = value; }
+        }
+        private float _lerp;
+       
 
         /// <summary>
         /// Is true if the axis tuning has been changed since the last call.
@@ -70,14 +71,16 @@ namespace JoystickMod
         public bool Changed
         {
             get { bool tmp = _changed; _changed = false; return tmp; }
+            set { _changed = value; }
         }
+        private bool _changed = true;
 
-        //public float Offset = 0;
+
         public float Min { get; set; } = -1f;
         public float Max { get; set; } = 1f;
 
         public float RawValue { get { return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", JoyIndex, AxisIndex)) * 10f; } }
-        public float CurveValue { get { return Process(RawValue); } }
+        public float CurveValue { get { return Process(RawValue); } } 
 
         //public float Value { get { return getAxisValue(this) * Sign; } }
         //public float Value_Sign { get { return getAxisValue(this) * Sign; } }
@@ -104,13 +107,11 @@ namespace JoystickMod
         //    Smooth = false;
         //}
 
-        public JoyAxis(int joyIndex, int axisIndex, float sensitivity, float curvature, float deadzone, bool invert, float offsetX, float offsetY, float min, float max)
+        public JoyAxis(int joyIndex, int axisIndex, float sensitivity, float curvature, float deadzone, bool invert, float offsetX, float offsetY, float min, float max,float lerp)
         {
             JoyIndex = joyIndex;
             AxisIndex = axisIndex;
-            //Flipped = flipped;
 
-            //Offset = 0;
             Min = min;
             Max = max;
 
@@ -119,11 +120,11 @@ namespace JoystickMod
             Deadzone = deadzone;
             OffsetX = offsetX;
             OffsetY = offsetY;
-            Invert = /*false*/invert;
-            Smooth = false;
+            Invert = invert;
+            Lerp = lerp;
         }
 
-        public static JoyAxis Default { get { return new JoyAxis(0, 0, 1f, 1f, 0f, false, 0f, 0f, -1f, 1f); } }
+        public static JoyAxis Default { get { return new JoyAxis(0, 0, 1f, 1f, 0f, false, 0f, 0f, -1f, 1f, 1f); } }
 
         /// <summary>
         /// Returns processed output value for given input value.
@@ -141,50 +142,48 @@ namespace JoystickMod
                 value = input > 0 ? input - Deadzone : input + Deadzone;
             value *= Sensitivity * (Invert ? -1 : 1);
             value = value > 0 ? Mathf.Pow(value, Curvature) : -Mathf.Pow(-value, Curvature);
-            return Mathf.Clamp(value + OffsetY, -1, 1);
+            return /*Mathf.MoveTowards(CurveValue, */Mathf.Clamp(value + OffsetY, -1, 1)/*, Lerp)*/;
         }
 
         public static float getAxisValue(JoyAxis axis)
         {
-            //return Input.GetAxis("Joy0Axis" + ((int)axis).ToString()) * 10f;
-
             return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", axis.JoyIndex, axis.AxisIndex)) * 10f;
         }
 
-        public float getAxisValue()
-        {
-            //return Input.GetAxis("Joy0Axis" + ((int)axis).ToString()) * 10f;
+        //public float getAxisValue()
+        //{
+        //    //return Input.GetAxis("Joy0Axis" + ((int)axis).ToString()) * 10f;
 
-            return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", JoyIndex, AxisIndex)) * 10f;
-        }
+        //    return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", JoyIndex, AxisIndex)) * 10f;
+        //}
 
-        public static float getAxisValue(int joyIndex, int axisIndex)
+        public static float GetAxisValue(int joyIndex, int axisIndex)
         {
             //return Input.GetAxis("Joy0Axis" + ((int)axis).ToString()) * 10f;
 
             return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", joyIndex, axisIndex)) * 10f;
         }
 
-        public float ConverJoyValueToFloat()
-        {
-            if (-0.01f > getAxisValue(/*AxisIndex*/))
-            {
-                return -1f;
-            }
-            else if (getAxisValue(/*AxisIndex*/) > 0.01f)
-            {
-                return 1f;
-            }
-            else
-            {
-                return 0f;
-            }
+        //public float ConverJoyValueToFloat()
+        //{
+        //    if (-0.01f > getAxisValue(/*AxisIndex*/))
+        //    {
+        //        return -1f;
+        //    }
+        //    else if (getAxisValue(/*AxisIndex*/) > 0.01f)
+        //    {
+        //        return 1f;
+        //    }
+        //    else
+        //    {
+        //        return 0f;
+        //    }
 
-        }
+        //}
 
         public override string ToString()
         {
-            return string.Format("JoyIndex:{0},AxisIndex:{1},Flipped:{2},OffsetX:{3},OffsetY:{4},Min:{5},Max:{6}", JoyIndex, AxisIndex, Invert, OffsetX, OffsetY, Min, Max);
+            return string.Format("JoyIndex:{0},AxisIndex:{1},Sensitivity:{2},Curvature:{3},Deadzone:{4},Invert:{5},OffsetX:{6},OffsetY:{7},Min:{8},Max:{9},Lerp:{10}", JoyIndex, AxisIndex, Sensitivity, Curvature, Deadzone, Invert, OffsetX, OffsetY, Min, Max, Lerp);
         }
 
     }

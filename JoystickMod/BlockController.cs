@@ -20,11 +20,37 @@ namespace JoystickMod
 
         public Dictionary<Guid, JoyAxis> dic_AxisData = new Dictionary<Guid, JoyAxis>();
 
+        private JoyAxis _copyAxisSource;
+
         private void Awake()
         {
-          Events.OnMachineLoaded += load;
+            Events.OnMachineLoaded += load;
             Events.OnBlockInit += AddJoyAxis;
+           
         }
+
+        private void Update()
+        {
+            if (BlockMapper.CurrentInstance != null)
+            {
+                var block = BlockMapper.CurrentInstance.Block;
+                if (isAxisBlock(block) && block != null)
+                {
+                    if (InputManager.CopyKeys())
+                    {
+                        _copyAxisSource = GetJoyAxisData(block);
+                    }
+                    //if (InputManager.PasteKeys())
+                    //{
+                    //    if (_copyAxisSource != null)
+                    //    {
+                    //        block.GetComponent<JoystickMod.Block>().joyAxis = _copyAxisSource;
+                    //    }
+                    //}
+                }
+            }      
+        }
+
 
         private void AddJoyAxis(Modding.Blocks.Block block)
         {
@@ -44,15 +70,13 @@ namespace JoystickMod
         private void load(PlayerMachineInfo info)
         {
             dic_AxisData.Clear();
-            Debug.Log("load");
+
             foreach (var v in info.Blocks)
             {
                 if (dic_AxisBlock.ContainsKey(v.Type))
                 {
-                    Debug.Log("需要储存数据");
-
                     var axis = formatDataToJoyAxis(v);
-                    dic_AxisData.Add(v.Guid, JoyAxis.Default);
+                    dic_AxisData.Add(v.Guid, axis);
                 }
             }
 
@@ -61,18 +85,74 @@ namespace JoystickMod
                 var axis = JoyAxis.Default;
 
 
-                if (blockInfo.Data.HasKey("axis-test"))
-                {
-                    
-                    axis.AxisIndex = blockInfo.Data.ReadInt("axis-test");
-                    Debug.Log("read " + blockInfo.Data.ReadInt("axis-test"));
+                if (blockInfo.Data.HasKey("axis-JoyIndex"))
+                {              
+                    axis.JoyIndex = blockInfo.Data.ReadInt("axis-JoyIndex");
                 }
-
+                if (blockInfo.Data.HasKey("axis-AxisIndex"))
+                {
+                    axis.AxisIndex = blockInfo.Data.ReadInt("axis-AxisIndex");
+                }
+                if (blockInfo.Data.HasKey("axis-Sensitivity"))
+                {
+                    axis.Sensitivity = blockInfo.Data.ReadFloat("axis-Sensitivity");
+                }
+                if (blockInfo.Data.HasKey("axis-Curvature"))
+                {
+                    axis.Curvature = blockInfo.Data.ReadFloat("axis-Curvature");
+                }
+                if (blockInfo.Data.HasKey("axis-Deadzone"))
+                {
+                    axis.Deadzone = blockInfo.Data.ReadFloat("axis-Deadzone");
+                }
+                if (blockInfo.Data.HasKey("axis-Invert"))
+                {
+                    axis.Invert = blockInfo.Data.ReadBool("axis-Invert");
+                }
+                if (blockInfo.Data.HasKey("axis-OffsetX"))
+                {
+                    axis.OffsetX = blockInfo.Data.ReadFloat("axis-OffsetX");
+                }
+                if (blockInfo.Data.HasKey("axis-OffsetY"))
+                {
+                    axis.OffsetY = blockInfo.Data.ReadFloat("axis-OffsetY");
+                }
+                if (blockInfo.Data.HasKey("axis-Min"))
+                {
+                    axis.Min = blockInfo.Data.ReadFloat("axis-Min");
+                }
+                if (blockInfo.Data.HasKey("axis-Max"))
+                {
+                    axis.Max = blockInfo.Data.ReadFloat("axis-Max");
+                }
 
                 return axis;
             }
 
         }
 
+        public static bool isAxisBlock(BlockBehaviour block)
+        {
+            if (dic_AxisBlock.ContainsKey(block.BlockID))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public static JoyAxis GetJoyAxisData(BlockBehaviour block)
+        {
+            try
+            {
+                return block.GetComponent<JoystickMod.Block>().joyAxis;
+            }
+            catch (Exception e)
+            {
+                BesiegeConsoleController.ShowMessage("Get Axis data is wrong");
+                BesiegeConsoleController.ShowMessage(e.Message);
+                return JoyAxis.Default;
+            }
+        }
     }
 }

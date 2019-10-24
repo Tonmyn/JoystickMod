@@ -27,11 +27,11 @@ public class WindowsController : MonoBehaviour
         if (BlockMapper.IsOpen)
         {
             var block = BlockMapper.CurrentInstance.Block;
-            if (isAxisBlock(block) )
+            if (BlockController.isAxisBlock(block) )
             {
                 if (block != lastBlock)
                 {
-                    var axis = GetJoyAxisData(block);
+                    var axis = BlockController.GetJoyAxisData(block);
                     OnChangedBlock?.Invoke(axis);
                     lastBlock = block;
                 }
@@ -60,21 +60,6 @@ public class WindowsController : MonoBehaviour
         }
     }
 
-    private bool isAxisBlock(BlockBehaviour block)
-    {
-        if (BlockController.dic_AxisBlock.ContainsKey(block.BlockID))
-        {
-            return true;
-        }       
-        return false;
-    }
-
-    private JoyAxis GetJoyAxisData(BlockBehaviour block)
-    {
-
-
-        return JoyAxis.Default;
-    }
 
 
     public static bool IsBuilding()
@@ -254,7 +239,7 @@ public class JoystickConsoleWindow : SafeUIBehaviour
             AxisValues.Clear();
             for (int i = 0; i < 10; i++)
             {
-                AxisValues.Add(string.Format("Axis {0} - Value: {1}", i, JoyAxis.getAxisValue(joyIndex, i).ToString("# 0.00")));
+                AxisValues.Add(string.Format("Axis {0} - Value: {1}", i, JoyAxis.GetAxisValue(joyIndex, i).ToString("# 0.00")));
             }
             GUILayout.SelectionGrid(-1, AxisValues.ToArray(), 2, new GUILayoutOption[] { GUILayout.MinWidth(100) });
         }
@@ -280,36 +265,30 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
         windowName = "Axis Mapper";
 
         WindowsController.OnToggleMapper += (value) => { ShouldShowGUI = value; };
-        WindowsController.OnChangedBlock += (value) => { _joyAxis = value; Debug.Log("changed"); };
+        WindowsController.OnChangedBlock += (value) => { _joyAxis = value; };
     }
 
-
-
-    public void Update()
-    {
- 
-    }
 
     protected override void WindowContent(int windowID)
     {
         Rect crossRect = new Rect((windowRect.width - windowRect.width * 0.9f) * 0.5f, 46f * 0f + 23, windowRect.width * 0.9f, windowRect.width * 0.9f);
         _graphRect = crossRect;
 
-        //GUILayout.Box("Control Curve", new GUILayoutOption[] { GUILayout.Height(windowRect.width * 0.9f + 35) });
         DrawCrossRect(crossRect, Color.gray);
         DrawGraph();
-
+        GUI.Label(new Rect(30, 50, 150, 24), "Output Value: " + _joyAxis.CurveValue.ToString("#0.00"));
 
         FillRect(new Rect(crossRect.x + crossRect.width * 0.5f + _joyAxis.RawValue * crossRect.width * 0.5f, crossRect.y, 1, crossRect.height), Color.yellow);
-
-
 
         _joyAxis.JoyIndex  =WindowsController.AddMenu("Joystick", Input.GetJoystickNames(), _joyAxis.JoyIndex);
         _joyAxis.AxisIndex  = WindowsController.AddMenu("Axis", new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }, _joyAxis.AxisIndex);
 
+        _joyAxis.Invert = WindowsController.AddToggle("Invert", _joyAxis.Invert);
+
         _joyAxis.Sensitivity = WindowsController.AddSlider("Sensitivity", _joyAxis.Sensitivity, 0f, 5f);
         _joyAxis.Curvature = WindowsController.AddSlider("Curvature", _joyAxis.Curvature, 0f, 3f);
         _joyAxis.Deadzone = WindowsController.AddSlider("Deadzone", _joyAxis.Deadzone, 0f, 0.5f);
+        _joyAxis.Lerp = WindowsController.AddSlider("Lerp", _joyAxis.Lerp, 0f, 0.5f);
 
         GUI.DragWindow(new Rect(0, 0, windowRect.width, 20));
     }
@@ -356,7 +335,7 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
             color);
     }
 
-    private void DrawGraph(/*string title,params GUILayoutOption[] options*/)
+    private void DrawGraph()
     {
         if (_graphTex == null || _graphRect != _lastGraphRect)
         {
@@ -366,13 +345,13 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
                     _graphTex.SetPixel(i, j, Color.clear);
             _resetTex = _graphTex.GetPixels();
         }
-        if (/*_axis*/_joyAxis.Changed || _graphRect != _lastGraphRect)
+        if (_joyAxis.Changed || _graphRect != _lastGraphRect)
         {
             _graphTex.SetPixels(_resetTex);
             float step = 0.5f / _graphTex.width;
             for (float xValue = -1; xValue < 1; xValue += step)
             {
-                float yValue = /*_axis*/_joyAxis.Process(xValue);
+                float yValue = _joyAxis.Process(xValue);
                 if (yValue <= -1f || yValue >= 1f) continue;
                 float xPixel = (xValue + 1) * _graphTex.width / 2;
                 float yPixel = (yValue + 1) * _graphTex.height / 2;
@@ -381,7 +360,7 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
             _graphTex.Apply();
         }
         _lastGraphRect = _graphRect;
-        GUILayout.Box(_graphTex/*, options*/);
+        GUILayout.Box(_graphTex);
     }
     internal static void FillRect(Rect position, Color color)
     {

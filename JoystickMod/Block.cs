@@ -20,64 +20,33 @@ namespace JoystickMod
         {
             BB = GetComponent<BlockBehaviour>();
             Events.OnMachineSave += OnSave;
-
-            joyAxis = loadJoyAxis();
-
-
-        }
-
-
-        private void load(PlayerMachineInfo info )
-        {
-            Debug.Log("load");
-        }
-
-        private JoyAxis loadJoyAxis()
-        {
-            //foreach (var v in BB.InitialState.)
-            //{
-            //    Debug.Log(v);
-            //}
-            Debug.Log(BB.InitializedState);
-
-
-            Machine.Active().MachineData.Write("test", "test");
-
-            return JoyAxis.Default;
-        }
-
-        private void Update()
-        {
         }
 
         public void OnSave(PlayerMachineInfo playerMachineInfo)
         {
-
-
-            //var info = Modding.Blocks.BlockInfo.From(Modding.Blocks.Block.From(BB)); ;
-            //info.Data.Write("axis-test", "test");
-
             foreach (var v in playerMachineInfo.Blocks)
             {
                 if (v.Guid == BB.Guid)
                 {
-                    int i = 1;
-                    v.Data.Write("axis-test", joyAxis.AxisIndex);
+                    v.Data.Write("axis-JoyIndex", joyAxis.JoyIndex);
+                    v.Data.Write("axis-AxisIndex", joyAxis.AxisIndex);
+                    v.Data.Write("axis-Sensitivity", joyAxis.Sensitivity);
+                    v.Data.Write("axis-Curvature", joyAxis.Curvature);
+                    v.Data.Write("axis-Deadzone", joyAxis.Deadzone);
+                    v.Data.Write("axis-Invert", joyAxis.Invert);                
+                    v.Data.Write("axis-OffsetX", joyAxis.OffsetX);
+                    v.Data.Write("axis-OffsetY", joyAxis.OffsetY);
+                    v.Data.Write("axis-Min", joyAxis.Min);
+                    v.Data.Write("axis-Max", joyAxis.Max);
+                    //v.Data.Write("axis-Lerp", joyAxis.Lerp);
                     break;
                 }
             }
-
-
-
-
-            Debug.Log("On Save " + BB.Guid);
+            return;
         }
 
         private void OnDestroy()
         {
-            Debug.Log("destroy");
-
-            //Events.OnMachineLoaded -= load;
             Events.OnMachineSave -= OnSave;
         }
     }
