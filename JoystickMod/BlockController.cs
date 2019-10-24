@@ -40,13 +40,24 @@ namespace JoystickMod
                     {
                         _copyAxisSource = GetJoyAxisData(block);
                     }
-                    //if (InputManager.PasteKeys())
-                    //{
-                    //    if (_copyAxisSource != null)
-                    //    {
-                    //        block.GetComponent<JoystickMod.Block>().joyAxis = _copyAxisSource;
-                    //    }
-                    //}
+                    if (InputManager.PasteKeys())
+                    {
+                        if (_copyAxisSource != null)
+                        {
+                            //block.GetComponent<JoystickMod.Block>().joyAxis.CopyProperties(_copyAxisSource);
+                            block.GetComponent<JoystickMod.Block>().joyAxis.JoyIndex = _copyAxisSource.JoyIndex;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.AxisIndex = _copyAxisSource.AxisIndex;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.Sensitivity = _copyAxisSource.Sensitivity;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.Curvature = _copyAxisSource.Curvature;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.Deadzone = _copyAxisSource.Deadzone;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.Invert = _copyAxisSource.Invert;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.OffsetX = _copyAxisSource.OffsetX;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.OffsetY = _copyAxisSource.OffsetY;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.Min = _copyAxisSource.Min;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.Max = _copyAxisSource.Max;
+                            block.GetComponent<JoystickMod.Block>().joyAxis.Lerp = _copyAxisSource.Lerp;
+                        }
+                    }
                 }
             }      
         }
