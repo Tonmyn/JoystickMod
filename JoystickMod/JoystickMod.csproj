@@ -50,6 +50,7 @@
     <Compile Include="Block.cs" />
     <Compile Include="BlockController.cs" />
     <Compile Include="Blocks\CogScript.cs" />
+    <Compile Include="Blocks\FlyingScript.cs" />
     <Compile Include="Blocks\PistonScript.cs" />
     <Compile Include="Blocks\SteeringScript.cs" />
     <Compile Include="Blocks\WaterCannonScript.cs" />

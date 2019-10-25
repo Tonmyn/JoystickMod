@@ -20,7 +20,9 @@ namespace JoystickMod
            {(int)BlockType.Piston,typeof(PistonScript) },
             {(int)BlockType.Wheel,typeof(CogScript) },
              {(int)BlockType.LargeWheel,typeof(CogScript) },
+             {(int)BlockType.CogMediumPowered,typeof(CogScript) },
              {(int)BlockType.WaterCannon,typeof(WaterCannonScript) },
+             //{(int)BlockType.FlyingBlock,typeof(FlyingScript) },
         };
 
         public Dictionary<Guid, JoyAxis> dic_AxisData = new Dictionary<Guid, JoyAxis>();

@@ -36,6 +36,8 @@ namespace JoystickMod
                 {
                     isFirstFrame = false;
                     joyAxis = BB.BuildingBlock.GetComponent<Block>().joyAxis;
+                    BB = GetComponent<BlockBehaviour>();
+                    rigidbody = GetComponent<Rigidbody>();
                     if (joyAxis.Enable) { OnSimulateStart_Enable(); }
                 }
 
@@ -52,7 +54,7 @@ namespace JoystickMod
 
         private void FixedUpdate()
         {
-            if (BB.isSimulating)
+            if (BB.isSimulating && !isFirstFrame)
             {
                 if (joyAxis.Enable)
                 {
@@ -63,7 +65,7 @@ namespace JoystickMod
 
         private void LateUpdate()
         {
-            if (BB.isSimulating)
+            if (BB.isSimulating && !isFirstFrame)
             {
                 if (joyAxis.Enable)
                 {

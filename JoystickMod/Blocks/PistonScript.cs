@@ -29,8 +29,8 @@ class PistonScript : Block
 
         targetPos = value;
         sliderCompress.posToBe = targetPos;
-        float single = this.myJoint.targetPosition.x;
-        if (single != sliderCompress.posToBe && this.myJoint.connectedBody != null)
+        float single = myJoint.targetPosition.x;
+        if (single != sliderCompress.posToBe && myJoint.connectedBody != null)
         {
             if (rigidbody.IsSleeping())
             {
@@ -40,13 +40,12 @@ class PistonScript : Block
             {
                 this.myJoint.connectedBody.WakeUp();
             }
-            ConfigurableJoint vector3 = this.myJoint;
+            ConfigurableJoint vector3 = myJoint;
             //float single1 = Mathf.Lerp(single, sliderCompress.posToBe, Time.deltaTime * sliderCompress.lerpSpeed * sliderCompress.SpeedSlider.Value * Mathf.Abs(sliderCompress.newLimit));
             float single1 = targetPos;
-            float single2 = this.myJoint.targetPosition.y;
-            Vector3 vector31 = this.myJoint.targetPosition;
-            vector3.targetPosition = new Vector3(single1, single2, vector31.z);
-            //Debug.Log(vector3.targetPosition);
+            float single2 = myJoint.targetPosition.y;
+            float single3 = myJoint.targetPosition.z;
+            vector3.targetPosition = new Vector3(single1, single2, single3);
         }
 
     }
