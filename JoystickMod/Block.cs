@@ -15,11 +15,66 @@ namespace JoystickMod
         public JoyAxis joyAxis = JoyAxis.Default;
 
         public BlockBehaviour BB;
+        public Rigidbody rigidbody;
+
+        private bool isFirstFrame = true;
 
         private void Awake()
         {
             BB = GetComponent<BlockBehaviour>();
+            rigidbody = GetComponent<Rigidbody>();
             Events.OnMachineSave += OnSave;
+
+            SafeAwake();
+        }
+
+        private void Update()
+        {
+            if (BB.isSimulating)
+            {
+                if (isFirstFrame)
+                {
+                    isFirstFrame = false;
+                    joyAxis = BB.BuildingBlock.GetComponent<Block>().joyAxis;
+                    if (joyAxis.Enable) { OnSimulateStart_Enable(); }
+                }
+
+                if (joyAxis.Enable)
+                {
+                    SimulateUpdateAlways_Enable();
+                }
+            }
+            else
+            {
+                isFirstFrame = true;
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            if (BB.isSimulating)
+            {
+                if (joyAxis.Enable)
+                {
+                    SimulateFixedUpdate_Enable();
+                }
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (BB.isSimulating)
+            {
+                if (joyAxis.Enable)
+                {
+                    SimulateLateUpdate_Enable();
+                }
+            }
+        }
+
+        private void OnDestroy()
+        {
+            Events.OnMachineSave -= OnSave;
         }
 
         public void OnSave(PlayerMachineInfo playerMachineInfo)
@@ -38,16 +93,20 @@ namespace JoystickMod
                     v.Data.Write("axis-OffsetY", joyAxis.OffsetY);
                     v.Data.Write("axis-Min", joyAxis.Min);
                     v.Data.Write("axis-Max", joyAxis.Max);
-                    //v.Data.Write("axis-Lerp", joyAxis.Lerp);
+                    v.Data.Write("axis-Lerp", joyAxis.Lerp);
+                    v.Data.Write("axis-Enable", joyAxis.Enable);
                     break;
                 }
             }
             return;
         }
 
-        private void OnDestroy()
-        {
-            Events.OnMachineSave -= OnSave;
-        }
+        public virtual void SafeAwake() { }
+        public virtual void OnSimulateStart_Enable() { }
+        public virtual void SimulateUpdateAlways_Enable() { }
+        public virtual void SimulateFixedUpdate_Enable() { }
+        public virtual void SimulateLateUpdate_Enable() { }
+
+
     }
 }

@@ -280,6 +280,7 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
 
         FillRect(new Rect(crossRect.x + crossRect.width * 0.5f + _joyAxis.RawValue * crossRect.width * 0.5f, crossRect.y, 1, crossRect.height), Color.yellow);
 
+        _joyAxis.Enable = WindowsController.AddToggle("Enable", _joyAxis.Enable);
         _joyAxis.JoyIndex  =WindowsController.AddMenu("Joystick", Input.GetJoystickNames(), _joyAxis.JoyIndex);
         _joyAxis.AxisIndex  = WindowsController.AddMenu("Axis", new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }, _joyAxis.AxisIndex);
 
@@ -288,7 +289,7 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
         _joyAxis.Sensitivity = WindowsController.AddSlider("Sensitivity", _joyAxis.Sensitivity, 0f, 5f);
         _joyAxis.Curvature = WindowsController.AddSlider("Curvature", _joyAxis.Curvature, 0f, 3f);
         _joyAxis.Deadzone = WindowsController.AddSlider("Deadzone", _joyAxis.Deadzone, 0f, 0.5f);
-        _joyAxis.Lerp = WindowsController.AddSlider("Lerp", _joyAxis.Lerp, 0f, 0.5f);
+        _joyAxis.Lerp = WindowsController.AddSlider("Lerp", _joyAxis.Lerp, 0f, 1f);
 
         GUI.DragWindow(new Rect(0, 0, windowRect.width, 20));
     }

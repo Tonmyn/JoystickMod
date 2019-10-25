@@ -49,7 +49,10 @@
   <ItemGroup>
     <Compile Include="Block.cs" />
     <Compile Include="BlockController.cs" />
+    <Compile Include="Blocks\CogScript.cs" />
+    <Compile Include="Blocks\PistonScript.cs" />
     <Compile Include="Blocks\SteeringScript.cs" />
+    <Compile Include="Blocks\WaterCannonScript.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="JoyAxis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
