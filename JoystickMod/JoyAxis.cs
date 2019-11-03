@@ -86,7 +86,7 @@ namespace JoystickMod
 
         //public float Value { get { return getAxisValue(this) * Sign; } }
         //public float Value_Sign { get { return getAxisValue(this) * Sign; } }
-        public int Value_Direction { get { return (int)ConverJoyValueToFloat() * (Invert == true ? -1 : 1); } }
+        public int Value_Direction { get { return (int)ConverJoyValueToFloat()/* * (Invert == true ? -1 : 1)*/; } }
 
         //public int Sign { get { return Flipped ? 1 : -1; } }
 

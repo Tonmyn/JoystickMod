@@ -30,29 +30,23 @@ class CogScript : Block
     public override void SimulateFixedUpdate_Enable()
     {
 
-        if (Rigidbody.IsSleeping())
-        {
-            Rigidbody.WakeUp();
-        }
-        try
-        {
-            if (myJoint.connectedBody.IsSleeping())
-            {
-                myJoint.connectedBody.WakeUp();
-            }
-        }
-        catch { }
+        //if (Rigidbody.IsSleeping())
+        //{
+        //    Rigidbody.WakeUp();
+        //}
+        //try
+        //{
+        //    if (myJoint.connectedBody.IsSleeping())
+        //    {
+        //        myJoint.connectedBody.WakeUp();
+        //    }
+        //}
+        //catch { }
 
         float value = 0f;
-        //if (LerpToggle.IsActive)
-        //{
-            value = Mathf.MoveTowards(targetSpeed, animationCurve.Evaluate(Mathf.Abs(joyAxis.CurveValue)), joyAxis.Lerp * Time.deltaTime);
-        //}
-        //else
-        //{
-        //    value = /*animationCurve.Evaluate(*/Mathf.Abs(joyAxis.Value)/*)*/;
-        //}
-      
+
+        value = Mathf.MoveTowards(targetSpeed, animationCurve.Evaluate(Mathf.Abs(joyAxis.CurveValue)), joyAxis.Lerp * Time.deltaTime);
+
         targetSpeed = value;
         cogMotorControllerHinge.SpeedSlider.Value = targetSpeed;
 

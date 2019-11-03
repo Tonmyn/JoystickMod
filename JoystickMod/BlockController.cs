@@ -16,7 +16,7 @@ namespace JoystickMod
         public static Dictionary<int, Type> dic_AxisBlock = new Dictionary<int, Type>()
         {
          {(int)BlockType.SteeringHinge,typeof(SteeringScript) },
-          {(int)BlockType.SteeringBlock,typeof(SteeringScript) },
+         {(int)BlockType.SteeringBlock,typeof(SteeringScript) },
            {(int)BlockType.Piston,typeof(PistonScript) },
             {(int)BlockType.Wheel,typeof(CogScript) },
              {(int)BlockType.LargeWheel,typeof(CogScript) },
@@ -38,7 +38,7 @@ namespace JoystickMod
 
         private void Update()
         {
-            if (BlockMapper.CurrentInstance != null)
+            if (BlockMapper.CurrentInstance != null  && !StatMaster.levelSimulating)
             {
                 var block = BlockMapper.CurrentInstance.Block;
                 if (isAxisBlock(block) && block != null)
