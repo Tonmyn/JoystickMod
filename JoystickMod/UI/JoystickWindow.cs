@@ -248,6 +248,26 @@ public class JoystickConsoleWindow : SafeUIBehaviour
     }
 }
 
+class JoystickManagerWindow : SafeUIBehaviour
+{
+
+    public override void SafeAwake()
+    {
+        windowName = "Joystick Manager Window";
+        windowRect = new Rect();
+    }
+
+
+    public override bool ShouldShowGUI { get; set; } = false;
+
+
+
+    protected override void WindowContent(int windowID)
+    {
+        throw new NotImplementedException();
+    }
+}
+
 public class JoyAxisMapperWindow : SafeUIBehaviour
 {
     public override bool ShouldShowGUI { get; set; } = false;

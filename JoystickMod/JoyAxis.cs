@@ -10,6 +10,7 @@ namespace JoystickMod
     {
         public int JoyIndex = 0;
         public int AxisIndex = 0;
+        public string Name = "JoyAxis";
 
         /* TUNING:
           * Following properties flip the changed flag on edit.
