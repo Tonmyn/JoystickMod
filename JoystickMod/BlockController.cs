@@ -51,21 +51,7 @@ namespace JoystickMod
                     {
                         if (_copyAxisSource != null)
                         {
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.CopyProperties(_copyAxisSource);
-
                             var axis = block.GetComponent<JoystickMod.Block>().joyAxis;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.JoyIndex = _copyAxisSource.JoyIndex;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.AxisIndex = _copyAxisSource.AxisIndex;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.Sensitivity = _copyAxisSource.Sensitivity;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.Curvature = _copyAxisSource.Curvature;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.Deadzone = _copyAxisSource.Deadzone;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.Invert = _copyAxisSource.Invert;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.OffsetX = _copyAxisSource.OffsetX;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.OffsetY = _copyAxisSource.OffsetY;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.Min = _copyAxisSource.Min;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.Max = _copyAxisSource.Max;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.Lerp = _copyAxisSource.Lerp;
-                            //block.GetComponent<JoystickMod.Block>().joyAxis.Enable = _copyAxisSource.Enable;
 
                             axis.JoyIndex = _copyAxisSource.JoyIndex;
                             axis.AxisIndex = _copyAxisSource.AxisIndex;
@@ -84,7 +70,6 @@ namespace JoystickMod
                 }
             }      
         }
-
 
         private void AddJoyAxis(Modding.Blocks.Block block)
         {

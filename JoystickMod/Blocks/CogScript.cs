@@ -24,7 +24,7 @@ class CogScript : Block
 
     public override void SimulateUpdateAlways_Enable()
     {
-        cogMotorControllerHinge.Input = joyAxis.Value_Direction;
+        cogMotorControllerHinge.Input = joyAxis.DirectionValue;
     }
     float targetSpeed = 0f;
     public override void SimulateFixedUpdate_Enable()

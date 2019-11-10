@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace JoystickMod
 {
+    
     public class JoyAxis
     {
         public int JoyIndex = 0;
@@ -84,31 +85,7 @@ namespace JoystickMod
 
         public float RawValue { get { return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", JoyIndex, AxisIndex)) * 10f; } }
         public float CurveValue { get { return Process(RawValue); } } 
-
-        //public float Value { get { return getAxisValue(this) * Sign; } }
-        //public float Value_Sign { get { return getAxisValue(this) * Sign; } }
-        public int Value_Direction { get { return (int)ConverJoyValueToFloat()/* * (Invert == true ? -1 : 1)*/; } }
-
-        //public int Sign { get { return Flipped ? 1 : -1; } }
-
-        //public JoyAxis(int joyIndex,int axisIndex,float sensitivity,float curvature ,float deadzone,bool flipped,float offsetX,float offsetY,float min,float max)
-        //{
-        //    JoyIndex = 0;
-        //    AxisIndex = 0;
-        //    Flipped = true;
-
-        //    //Offset = 0;
-        //    Min = -1f;
-        //    Max = 1f;
-
-        //    Sensitivity = 1;
-        //    Curvature = 1;
-        //    Deadzone = 0;
-        //    OffsetX = 0;
-        //    OffsetY = 0;
-        //    Invert = false;
-        //    Smooth = false;
-        //}
+        public int DirectionValue { get { return (int)ConverAxisValueToNormal(); } }
 
         public JoyAxis(bool enable, int joyIndex, int axisIndex, float sensitivity, float curvature, float deadzone, bool invert, float offsetX, float offsetY, float min, float max,float lerp)
         {
@@ -128,7 +105,6 @@ namespace JoystickMod
             Invert = invert;
             Lerp = lerp;
         }
-
         public JoyAxis(JoyAxis joyAxis)
         {
             Enable = joyAxis.Enable;
@@ -166,29 +142,18 @@ namespace JoystickMod
                 value = input > 0 ? input - Deadzone : input + Deadzone;
             value *= Sensitivity * (Invert ? -1 : 1);
             value = value > 0 ? Mathf.Pow(value, Curvature) : -Mathf.Pow(-value, Curvature);
-            return /*Mathf.MoveTowards(CurveValue, */Mathf.Clamp(value + OffsetY, -1, 1)/*, Lerp)*/;
+            return Mathf.Clamp(value + OffsetY, -1, 1);
         }
 
-        public static float getAxisValue(JoyAxis axis)
+        public static float GetAxisValue(JoyAxis axis)
         {
             return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", axis.JoyIndex, axis.AxisIndex)) * 10f;
         }
-
-        //public float getAxisValue()
-        //{
-        //    //return Input.GetAxis("Joy0Axis" + ((int)axis).ToString()) * 10f;
-
-        //    return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", JoyIndex, AxisIndex)) * 10f;
-        //}
-
         public static float GetAxisValue(int joyIndex, int axisIndex)
         {
-            //return Input.GetAxis("Joy0Axis" + ((int)axis).ToString()) * 10f;
-
             return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", joyIndex, axisIndex)) * 10f;
         }
-
-        public float ConverJoyValueToFloat()
+        public float ConverAxisValueToNormal()
         {
             if (-0.01f > CurveValue)
             {
@@ -204,7 +169,6 @@ namespace JoystickMod
             }
 
         }
-
         public override string ToString()
         {
             return string.Format("Enable:{0},JoyIndex:{1},AxisIndex:{2},Sensitivity:{3},Curvature:{4},Deadzone:{5},Invert:{6},OffsetX:{7},OffsetY:{8},Min:{9},Max:{10},Lerp:{11}",Enable, JoyIndex, AxisIndex, Sensitivity, Curvature, Deadzone, Invert, OffsetX, OffsetY, Min, Max, Lerp);

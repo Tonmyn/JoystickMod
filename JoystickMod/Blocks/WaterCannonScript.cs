@@ -25,7 +25,7 @@ class WaterCannonScript : Block
     {
         if (StrengthSliderValueSign)
         {
-            waterCannonController.isActive = joyAxis.Value_Direction > 0 ? true : false;
+            waterCannonController.isActive = joyAxis.DirectionValue > 0 ? true : false;
         }
 
         var value = 0f;

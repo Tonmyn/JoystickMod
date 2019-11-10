@@ -199,7 +199,7 @@ public class JoystickConsoleWindow : SafeUIBehaviour
     public override void SafeAwake()
     {
         windowRect = new Rect(15f, 100f, 356f, 180f);
-        windowName = "Joystick Console Window Ctrl+F10";
+        windowName = "Joystick Console Window";
     }
 
     public void Update()
@@ -250,10 +250,9 @@ public class JoystickConsoleWindow : SafeUIBehaviour
 
 class JoystickManagerWindow : SafeUIBehaviour
 {
-
     public override void SafeAwake()
     {
-        windowName = "Joystick Manager Window";
+        windowName = "Joystick Manager Window Ctrl+F10";
         windowRect = new Rect();
     }
 
