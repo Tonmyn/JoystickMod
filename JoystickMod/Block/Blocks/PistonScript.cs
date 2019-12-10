@@ -18,14 +18,14 @@ class PistonScript : Block
         myJoint = GetComponent<ConfigurableJoint>();
         sliderCompress = GetComponent<SliderCompress>();
 
-        animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(0f + joyAxis.CurveValue, sliderCompress.startLimit), new Keyframe(/*-1f * joyAxis.Sign*/1f*joyAxis.Max, sliderCompress.newLimit) });
+        animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(0f /*+ joyAxis.CurveValue*/, sliderCompress.startLimit), new Keyframe(/*-1f * joyAxis.Sign*/1f*/*joyAxis.*/CurveMax, sliderCompress.newLimit) });
     }
     float targetPos = 0f;
     public override void SimulateLateUpdate_Enable()
     {
         var value = 0f;
 
-        value = Mathf.MoveTowards(targetPos, animationCurve.Evaluate(joyAxis.CurveValue), joyAxis.Lerp * sliderCompress.SpeedSlider.Value * Time.deltaTime * 6f);
+        value = Mathf.MoveTowards(targetPos, animationCurve.Evaluate(/*joyAxis.CurveValue*/GetAxesValue()), /*joyAxis.Lerp **/ sliderCompress.SpeedSlider.Value * Time.deltaTime * 6f);
 
         targetPos = value;
         sliderCompress.posToBe = targetPos;

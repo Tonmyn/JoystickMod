@@ -12,7 +12,6 @@ namespace JoystickMod
 {
     public class BlockController : MonoBehaviour
     {
-
         public static Dictionary<int, Type> dic_AxisBlock = new Dictionary<int, Type>()
         {
          {(int)BlockType.SteeringHinge,typeof(SteeringScript) },
@@ -25,9 +24,9 @@ namespace JoystickMod
              //{(int)BlockType.FlyingBlock,typeof(FlyingScript) },
         };
 
-        public Dictionary<Guid, JoyAxis> dic_AxisData = new Dictionary<Guid, JoyAxis>();
+        public Dictionary<Guid, JoyAxis[]> dic_AxisData = new Dictionary<Guid, JoyAxis[]>();
 
-        private JoyAxis _copyAxisSource;
+        private JoyAxis[] _copyAxesSource;
 
         private void Awake()
         {
@@ -35,7 +34,6 @@ namespace JoystickMod
             Events.OnBlockInit += AddJoyAxis;
            
         }
-
         private void Update()
         {
             if (BlockMapper.CurrentInstance != null  && !StatMaster.levelSimulating)
@@ -45,26 +43,53 @@ namespace JoystickMod
                 {
                     if (InputManager.CopyKeys())
                     {
-                        _copyAxisSource = GetJoyAxisData(block);
+                        _copyAxesSource = GetJoyAxisData(block);
                     }
                     if (InputManager.PasteKeys())
                     {
-                        if (_copyAxisSource != null)
+                        if (_copyAxesSource != null)
                         {
-                            var axis = block.GetComponent<JoystickMod.Block>().joyAxis;
+                            //var Axes = block.GetComponent<JoystickMod.Block>().joyAxes;
 
-                            axis.JoyIndex = _copyAxisSource.JoyIndex;
-                            axis.AxisIndex = _copyAxisSource.AxisIndex;
-                            axis.Sensitivity = _copyAxisSource.Sensitivity;
-                            axis.Curvature = _copyAxisSource.Curvature;
-                            axis.Deadzone = _copyAxisSource.Deadzone;
-                            axis.Invert = _copyAxisSource.Invert;
-                            axis.OffsetX = _copyAxisSource.OffsetX;
-                            axis.OffsetY = _copyAxisSource.OffsetY;
-                            axis.Min = _copyAxisSource.Min;
-                            axis.Max = _copyAxisSource.Max;
-                            axis.Lerp = _copyAxisSource.Lerp;
-                            axis.Enable = _copyAxisSource.Enable;
+                            JoyAxis[] joyAxes = new JoyAxis[] { };
+
+                            //foreach (var axis in block.GetComponent<JoystickMod.Block>().joyAxes)
+                            //{
+                            //    //var axis = block.GetComponent<JoystickMod.Block>().joyAxis;
+
+                            //    axis.JoyIndex = _copyAxesSource.JoyIndex;
+                            //    axis.AxisIndex = _copyAxesSource.AxisIndex;
+                            //    axis.Sensitivity = _copyAxesSource.Sensitivity;
+                            //    axis.Curvature = _copyAxesSource.Curvature;
+                            //    axis.Deadzone = _copyAxesSource.Deadzone;
+                            //    axis.Invert = _copyAxesSource.Invert;
+                            //    axis.OffsetX = _copyAxesSource.OffsetX;
+                            //    axis.OffsetY = _copyAxesSource.OffsetY;
+                            //    axis.Min = _copyAxesSource.Min;
+                            //    axis.Max = _copyAxesSource.Max;
+                            //    axis.Lerp = _copyAxesSource.Lerp;
+                            //    //axis.Enable = _copyAxisSource.Enable;
+                            //}          
+
+                            foreach (var axis in _copyAxesSource)
+                            {
+                                JoyAxis newAxis = new JoyAxis();
+                                newAxis.JoyIndex = axis.JoyIndex;
+                                newAxis.AxisIndex = axis.AxisIndex;
+                                newAxis.Sensitivity = axis.Sensitivity;
+                                newAxis.Curvature = axis.Curvature;
+                                newAxis.Deadzone = axis.Deadzone;
+                                newAxis.Invert = axis.Invert;
+                                newAxis.OffsetX = axis.OffsetX;
+                                newAxis.OffsetY = axis.OffsetY;
+                                newAxis.Min = axis.Min;
+                                newAxis.Max = axis.Max;
+                                newAxis.Lerp = axis.Lerp;
+
+                                joyAxes.ToList().Add(newAxis);
+                            }
+
+                            block.GetComponent<JoystickMod.Block>().joyAxes = joyAxes;
                         }
                     }
                 }
@@ -81,7 +106,8 @@ namespace JoystickMod
 
                 if (dic_AxisData.ContainsKey(block.Guid))
                 {
-                    com.joyAxis = dic_AxisData[block.Guid];
+                    //com.joyAxis = dic_AxisData[block.Guid];
+                    com.joyAxes = dic_AxisData[block.Guid];
                 }
             }
         }
@@ -94,7 +120,8 @@ namespace JoystickMod
             {
                 if (dic_AxisBlock.ContainsKey(v.Type))
                 {
-                    var axis = formatDataToJoyAxis(v);
+                    //var axis = formatDataToJoyAxis(v);
+                    var axis = formatDataToJoyAxes(v);
                     dic_AxisData.Add(v.Guid, axis);
                 }
             }
@@ -105,7 +132,7 @@ namespace JoystickMod
 
 
                 if (blockInfo.Data.HasKey("axis-JoyIndex"))
-                {              
+                {
                     axis.JoyIndex = blockInfo.Data.ReadInt("axis-JoyIndex");
                 }
                 if (blockInfo.Data.HasKey("axis-AxisIndex"))
@@ -144,13 +171,45 @@ namespace JoystickMod
                 {
                     axis.Max = blockInfo.Data.ReadFloat("axis-Max");
                 }
-                if (blockInfo.Data.HasKey("axis-Enable"))
+                if (blockInfo.Data.HasKey("axis-Lerp"))
                 {
-                    axis.Enable = blockInfo.Data.ReadBool("axis-Enable");
+                    axis.Lerp = blockInfo.Data.ReadFloat("axis-Lerp");
                 }
+                //if (blockInfo.Data.HasKey("axis-Enable"))
+                //{
+                //    axis.Enable = blockInfo.Data.ReadBool("axis-Enable");
+                //}
+
                 return axis;
             }
+            JoyAxis[] formatDataToJoyAxes(Modding.Blocks.BlockInfo blockInfo)
+            {
+                ModData modData = Mod.mod.GetComponent<ModDataManager>().ModData;
+                var axes = new JoyAxis[] { };
+                int index = 0;
 
+                if (blockInfo.Data.HasKey("JoyAxis-Number"))
+                {
+                    index = blockInfo.Data.ReadInt("JoyAxis-Number");
+                }
+                for (int i = 0; i < index; i++)
+                {
+                    var key = string.Format("JoyAxis {0}", i);     
+
+                    if (blockInfo.Data.HasKey(key))
+                    {
+                        var guid = new Guid(blockInfo.Data.ReadString(key));
+
+                        JoyAxis joyAxis = modData.joyAxes.ToList().Find(match => match.Guid == guid);
+                        if (joyAxis != null)
+                        {
+                            axes.ToList().Add(joyAxis);
+                        }
+                    }
+                }
+
+                return axes;
+            }
         }
 
         public static bool isAxisBlock(BlockBehaviour block)
@@ -161,19 +220,17 @@ namespace JoystickMod
             }
             return false;
         }
-
-
-        public static JoyAxis GetJoyAxisData(BlockBehaviour block)
+        public static JoyAxis[] GetJoyAxisData(BlockBehaviour block)
         {
             try
             {
-                return block.GetComponent<JoystickMod.Block>().joyAxis;
+                return block.GetComponent<JoystickMod.Block>()./*joyAxis*/joyAxes;
             }
             catch (Exception e)
             {
                 BesiegeConsoleController.ShowMessage("Get Axis data is wrong");
                 BesiegeConsoleController.ShowMessage(e.Message);
-                return JoyAxis.Default;
+                return new JoyAxis[] { JoyAxis.Default };
             }
         }
     }

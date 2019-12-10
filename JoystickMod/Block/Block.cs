@@ -12,7 +12,11 @@ namespace JoystickMod
 {
     public class Block : MonoBehaviour
     {
-        public JoyAxis joyAxis = JoyAxis.Default;
+        public string[] AxesGuid = new string[] { };
+        public JoyAxis[] joyAxes = new JoyAxis[] { };
+        public bool JoyEnabled = false;
+        public float CurveMax = 1f;
+        public float CurveMin = -1f;
 
         public BlockBehaviour BB;
         public Rigidbody rigidbody;
@@ -27,7 +31,6 @@ namespace JoystickMod
 
             SafeAwake();
         }
-
         private void Update()
         {
             if (BB.isSimulating)
@@ -35,13 +38,13 @@ namespace JoystickMod
                 if (isFirstFrame)
                 {
                     isFirstFrame = false;
-                    joyAxis = BB.BuildingBlock.GetComponent<Block>().joyAxis;
+                    joyAxes = BB.BuildingBlock.GetComponent<Block>().joyAxes;
                     BB = GetComponent<BlockBehaviour>();
                     rigidbody = GetComponent<Rigidbody>();
-                    if (joyAxis.Enable) { OnSimulateStart_Enable(); }
+                    if (JoyEnabled) { OnSimulateStart_Enable(); }
                 }
 
-                if (joyAxis.Enable)
+                if (JoyEnabled)
                 {
                     SimulateUpdateAlways_Enable();
                 }
@@ -51,32 +54,63 @@ namespace JoystickMod
                 isFirstFrame = true;
             }
         }
-
         private void FixedUpdate()
         {
             if (BB.isSimulating && !isFirstFrame)
             {
-                if (joyAxis.Enable)
+                if (JoyEnabled)
                 {
                     SimulateFixedUpdate_Enable();
                 }
             }
         }
-
         private void LateUpdate()
         {
             if (BB.isSimulating && !isFirstFrame)
             {
-                if (joyAxis.Enable)
+                if (JoyEnabled)
                 {
                     SimulateLateUpdate_Enable();
                 }
             }
         }
-
         private void OnDestroy()
         {
             Events.OnMachineSave -= OnSave;
+        }
+
+        public float GetAxesValue()
+        {
+            var f = 0f;
+
+            foreach (var a in joyAxes)
+            {
+                f += a.CurveValue;
+            }
+
+            return f;
+        }
+        public float GetAxesValueDirection()
+        {
+            var d = 0;
+
+            foreach (var a in joyAxes)
+            {
+                d += a.DirectionValue;
+            }
+
+            if (-0.01f > d)
+            {
+                return -1f;
+            }
+            else if (d > 0.01f)
+            {
+                return 1f;
+            }
+            else
+            {
+                return 0f;
+            }
         }
 
         public void OnSave(PlayerMachineInfo playerMachineInfo)
@@ -85,18 +119,25 @@ namespace JoystickMod
             {
                 if (v.Guid == BB.Guid)
                 {
-                    v.Data.Write("axis-JoyIndex", joyAxis.JoyIndex);
-                    v.Data.Write("axis-AxisIndex", joyAxis.AxisIndex);
-                    v.Data.Write("axis-Sensitivity", joyAxis.Sensitivity);
-                    v.Data.Write("axis-Curvature", joyAxis.Curvature);
-                    v.Data.Write("axis-Deadzone", joyAxis.Deadzone);
-                    v.Data.Write("axis-Invert", joyAxis.Invert);                
-                    v.Data.Write("axis-OffsetX", joyAxis.OffsetX);
-                    v.Data.Write("axis-OffsetY", joyAxis.OffsetY);
-                    v.Data.Write("axis-Min", joyAxis.Min);
-                    v.Data.Write("axis-Max", joyAxis.Max);
-                    v.Data.Write("axis-Lerp", joyAxis.Lerp);
-                    v.Data.Write("axis-Enable", joyAxis.Enable);
+                    //v.Data.Write("axis-JoyIndex", joyAxis.JoyIndex);
+                    //v.Data.Write("axis-AxisIndex", joyAxis.AxisIndex);
+                    //v.Data.Write("axis-Sensitivity", joyAxis.Sensitivity);
+                    //v.Data.Write("axis-Curvature", joyAxis.Curvature);
+                    //v.Data.Write("axis-Deadzone", joyAxis.Deadzone);
+                    //v.Data.Write("axis-Invert", joyAxis.Invert);                
+                    //v.Data.Write("axis-OffsetX", joyAxis.OffsetX);
+                    //v.Data.Write("axis-OffsetY", joyAxis.OffsetY);
+                    //v.Data.Write("axis-Min", joyAxis.Min);
+                    //v.Data.Write("axis-Max", joyAxis.Max);
+                    //v.Data.Write("axis-Lerp", joyAxis.Lerp);
+                    //v.Data.Write("axis-Enable", joyAxis.Enable);
+                    int index = 0;
+
+                    foreach (var axis in joyAxes)
+                    {
+                        v.Data.Write("JoyAxis " + index++, axis.Guid);
+                    }
+                    v.Data.Write("JoyAxis-Number", index);
                     break;
                 }
             }
@@ -108,7 +149,5 @@ namespace JoystickMod
         public virtual void SimulateUpdateAlways_Enable() { }
         public virtual void SimulateFixedUpdate_Enable() { }
         public virtual void SimulateLateUpdate_Enable() { }
-
-
     }
 }

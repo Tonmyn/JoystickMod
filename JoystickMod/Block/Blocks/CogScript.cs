@@ -19,12 +19,12 @@ class CogScript : Block
         myJoint = GetComponent<ConfigurableJoint>();
         cogMotorControllerHinge = GetComponent<CogMotorControllerHinge>();
 
-       animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(0f+joyAxis.CurveValue, 0f), new Keyframe(1f*joyAxis.Max, cogMotorControllerHinge.SpeedSlider.Value) });
+       animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(0f/*+joyAxis.CurveValue*/, 0f), new Keyframe(/*1f*joyAxis.Max*/CurveMax, cogMotorControllerHinge.SpeedSlider.Value) });
     }
 
     public override void SimulateUpdateAlways_Enable()
     {
-        cogMotorControllerHinge.Input = joyAxis.DirectionValue;
+        cogMotorControllerHinge.Input = /*joyAxis.DirectionValue*/GetAxesValueDirection();
     }
     float targetSpeed = 0f;
     public override void SimulateFixedUpdate_Enable()
@@ -45,7 +45,7 @@ class CogScript : Block
 
         float value = 0f;
 
-        value = Mathf.MoveTowards(targetSpeed, animationCurve.Evaluate(Mathf.Abs(joyAxis.CurveValue)), joyAxis.Lerp * Time.deltaTime);
+        value = Mathf.MoveTowards(targetSpeed, animationCurve.Evaluate(Mathf.Abs(/*joyAxis.CurveValue*/GetAxesValue())), /*joyAxis.Lerp **/ Time.deltaTime);
 
         targetSpeed = value;
         cogMotorControllerHinge.SpeedSlider.Value = targetSpeed;

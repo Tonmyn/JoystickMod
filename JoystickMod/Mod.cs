@@ -10,15 +10,17 @@ namespace JoystickMod
     public class Mod : ModEntryPoint
     {
 
-        public GameObject mod;
+        public static GameObject mod;
 
         public override void OnLoad()
         {
             mod = new GameObject("Joystick Mod");
             //mod.AddComponent<PrintPressedKey>();
+            mod.AddComponent<ModDataManager>();
             mod.AddComponent<BlockController>();
             mod.AddComponent<WindowsController>();
             mod.AddComponent<JoystickConsoleWindow>();
+            mod.AddComponent<JoystickManagerWindow>();
             mod.AddComponent<JoyAxisMapperWindow>();
            
             //mod.AddComponent<MapperWindow>();

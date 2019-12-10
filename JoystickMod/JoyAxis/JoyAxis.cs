@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Modding.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,91 +7,63 @@ using UnityEngine;
 
 namespace JoystickMod
 {
-    
-    public class JoyAxis
+    public class JoyAxis:Element
     {
-        public int JoyIndex = 0;
-        public int AxisIndex = 0;
-        public string Name = "JoyAxis";
+        [Modding.Serialization.CanBeEmpty]
+        public int JoyIndex;
+        [Modding.Serialization.CanBeEmpty]
+        public int AxisIndex;
+    [Modding.Serialization.CanBeEmpty]
+        public string Name;
 
         /* TUNING:
           * Following properties flip the changed flag on edit.
           * Changed flag is used for redrawing the graph.
           */
-        public float Sensitivity
-        {
-            get { return _sensitivity; }
-            set { _changed |= value != _sensitivity; _sensitivity = value; }
-        }
+        [Modding.Serialization.CanBeEmpty]
+        public float Sensitivity { get { return _sensitivity; } set { _changed |= value != _sensitivity; _sensitivity = value; } }
         private float _sensitivity;
-       
-        public float Curvature
-        {
-            get { return _curvature; }
-            set { _changed |= value != _curvature; _curvature = value; }
-        }
+        [Modding.Serialization.CanBeEmpty]
+        public float Curvature { get { return _curvature; } set { _changed |= value != _curvature; _curvature = value; } }           
         private float _curvature;
-
-        public float Deadzone
-        {
-            get { return _deadzone; }
-            set { _changed |= value != _deadzone; _deadzone = value; }
-        }
+        [Modding.Serialization.CanBeEmpty]
+        public float Deadzone { get { return _deadzone; } set { _changed |= value != _deadzone; _deadzone = value; } }
         private float _deadzone;
-
-        public float OffsetX
-        {
-            get { return _offx; }
-            set { _changed |= value != _offx; _offx = value; }
-        }
+        [Modding.Serialization.CanBeEmpty]
+        public float OffsetX { get { return _offx; } set { _changed |= value != _offx; _offx = value; } }
         private float _offx;
-
-        public float OffsetY
-        {
-            get { return _offy; }
-            set { _changed |= value != _offy; _offy = value; }
-        }
+        [Modding.Serialization.CanBeEmpty]
+        public float OffsetY { get { return _offy; } set { _changed |= value != _offy; _offy = value; } }
         private float _offy;
-
-        public bool Invert
-        {
-            get { return _invert; }
-            set { _changed |= value != _invert; _invert = value; }
-        }
+        [Modding.Serialization.CanBeEmpty]
+        public bool Invert { get { return _invert; } set { _changed |= value != _invert; _invert = value; } }
         private bool _invert;
-
-        public float Lerp
-        {
-            get { return _lerp; }
-            set {_lerp = value; }
-        }
+        [Modding.Serialization.CanBeEmpty]
+        public float Lerp { get { return _lerp; } set { _lerp = value; } }
         private float _lerp;
-
-        public bool Enable { get; set; } =false;
-
+        //[Modding.Serialization.CanBeEmpty]
+        //public bool Enable { get; set; } =false;
+        [Modding.Serialization.CanBeEmpty]
+        public Guid Guid { get; private set; } = Guid.NewGuid();
 
         /// <summary>
         /// Is true if the axis tuning has been changed since the last call.
         /// </summary>
         public bool Changed
-        {
-            get { bool tmp = _changed; _changed = false; return tmp; }
-            set { _changed = value; }
-        }
+        { get { bool tmp = _changed; _changed = false; return tmp; } set { _changed = value; } }
         private bool _changed = true;
 
-
+        [Modding.Serialization.CanBeEmpty]
         public float Min { get; set; } = -1f;
+        [Modding.Serialization.CanBeEmpty]
         public float Max { get; set; } = 1f;
 
         public float RawValue { get { return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", JoyIndex, AxisIndex)) * 10f; } }
         public float CurveValue { get { return Process(RawValue); } } 
         public int DirectionValue { get { return (int)ConverAxisValueToNormal(); } }
 
-        public JoyAxis(bool enable, int joyIndex, int axisIndex, float sensitivity, float curvature, float deadzone, bool invert, float offsetX, float offsetY, float min, float max,float lerp)
+        public JoyAxis( int joyIndex, int axisIndex, float sensitivity, float curvature, float deadzone, bool invert, float offsetX, float offsetY, float min, float max,float lerp)
         {
-            Enable = enable;
-
             JoyIndex = joyIndex;
             AxisIndex = axisIndex;
 
@@ -107,8 +80,6 @@ namespace JoystickMod
         }
         public JoyAxis(JoyAxis joyAxis)
         {
-            Enable = joyAxis.Enable;
-
             JoyIndex = joyAxis.JoyIndex;
             AxisIndex = joyAxis.AxisIndex;
 
@@ -123,8 +94,22 @@ namespace JoystickMod
             Invert = joyAxis.Invert;
             Lerp = joyAxis.Lerp;
         }
+        public JoyAxis()
+        {
+            JoyIndex = 0;
+            AxisIndex = 0;
+            Name = "Joy Axis";
 
-        public static JoyAxis Default { get { return new JoyAxis(false,0, 0, 1f, 1f, 0f, false, 0f, 0f, -1f, 1f, 1f); } }
+            Sensitivity = 1f;
+            Curvature = 1f;
+            Deadzone = 0f;
+            Invert = false;
+            OffsetX = OffsetY = 0f;
+            Min = -1f;
+            Max = 1f;
+            Lerp = 1f;
+        }
+        public static JoyAxis Default { get { return new JoyAxis(0, 0, 1f, 1f, 0f, false, 0f, 0f, -1f, 1f, 1f); } }
 
         /// <summary>
         /// Returns processed output value for given input value.
@@ -171,7 +156,7 @@ namespace JoystickMod
         }
         public override string ToString()
         {
-            return string.Format("Enable:{0},JoyIndex:{1},AxisIndex:{2},Sensitivity:{3},Curvature:{4},Deadzone:{5},Invert:{6},OffsetX:{7},OffsetY:{8},Min:{9},Max:{10},Lerp:{11}",Enable, JoyIndex, AxisIndex, Sensitivity, Curvature, Deadzone, Invert, OffsetX, OffsetY, Min, Max, Lerp);
+            return string.Format("name:{0},JoyIndex:{1},AxisIndex:{2},Sensitivity:{3},Curvature:{4},Deadzone:{5},Invert:{6},OffsetX:{7},OffsetY:{8},Min:{9},Max:{10},Lerp:{11}", Name, JoyIndex, AxisIndex, Sensitivity, Curvature, Deadzone, Invert, OffsetX, OffsetY, Min, Max, Lerp);
         }
 
     }

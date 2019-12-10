@@ -54,5 +54,60 @@ namespace JoystickMod
         public abstract bool ShouldShowGUI { get; set; }
 
         public virtual void SafeAwake() { }
+
+        public bool AddToggle(string title, bool value = false)
+        {
+            GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
+            {
+                GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MinWidth(75f), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
+                GUILayout.FlexibleSpace();
+                value = GUILayout.Toggle(value, "", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.ExpandWidth(false) });
+            }
+            GUILayout.EndHorizontal();
+            return value;
+        }
+        public float AddSlider(string title, float value, float min = 0f, float max = 1f)
+        {
+            GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
+            {
+                GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MinWidth(75), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
+                //GUILayout.FlexibleSpace();
+                GUILayout.Space(10);
+                GUILayout.BeginVertical();
+                GUILayout.Space(10);
+                value = GUILayout.HorizontalSlider(value, min, max, new GUILayoutOption[] { GUILayout.MinWidth(75), GUILayout.Height(15f) });
+                GUILayout.EndVertical();
+                //GUILayout.Space(width * 0.05f);
+                //GUILayout.FlexibleSpace();
+                GUILayout.Space(10);
+                value = float.Parse(GUILayout.TextField(value.ToString("#0.000"), new GUILayoutOption[] { GUILayout.MinWidth(50), GUILayout.ExpandWidth(false), GUILayout.Height(25f) }));
+            }
+            GUILayout.EndHorizontal();
+            return value;
+        }
+        public int AddMenu(string title, string[] items, int value = 0)
+        {
+            GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
+            {
+                GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MaxWidth(75), GUILayout.MinWidth(75) });
+                if (GUILayout.Button("<", new GUILayoutOption[] { GUILayout.MaxWidth(30), GUILayout.MinWidth(30) }))
+                {
+                    if (--value < 0)
+                    {
+                        value = items.Length - 1;
+                    }
+                }
+                GUILayout.Box(items[value]);
+                if (GUILayout.Button(">", new GUILayoutOption[] { GUILayout.MaxWidth(30), GUILayout.MinWidth(30) }))
+                {
+                    if (++value > items.Length - 1)
+                    {
+                        value = 0;
+                    }
+                }
+            }
+            GUILayout.EndHorizontal();
+            return value;
+        }
     }
 }

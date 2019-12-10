@@ -47,16 +47,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Block.cs" />
-    <Compile Include="BlockController.cs" />
-    <Compile Include="Blocks\CogScript.cs" />
-    <Compile Include="Blocks\FlyingScript.cs" />
-    <Compile Include="Blocks\PistonScript.cs" />
-    <Compile Include="Blocks\SteeringScript.cs" />
-    <Compile Include="Blocks\WaterCannonScript.cs" />
-    <Compile Include="JoysitckData\JoysitckData.cs" />
+    <Compile Include="Block\Block.cs" />
+    <Compile Include="Block\BlockController.cs" />
+    <Compile Include="Block\Blocks\CogScript.cs" />
+    <Compile Include="Block\Blocks\FlyingScript.cs" />
+    <Compile Include="Block\Blocks\PistonScript.cs" />
+    <Compile Include="Block\Blocks\SteeringScript.cs" />
+    <Compile Include="Block\Blocks\WaterCannonScript.cs" />
+    <Compile Include="ModDataManager.cs" />
+    <Compile Include="ModData.cs" />
     <Compile Include="Mod.cs" />
-    <Compile Include="JoyAxis.cs" />
+    <Compile Include="JoyAxis\JoyAxis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\JoystickWindow.cs" />
     <Compile Include="UI\SafeUIBehaviour.cs" />

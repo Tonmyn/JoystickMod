@@ -9,10 +9,12 @@ using UnityEngine.SceneManagement;
 public class WindowsController : MonoBehaviour
 {
     public static event Action<bool> OnToggleMapper;
-    public static event Action<JoyAxis> OnChangedBlock;
+    public static event Action<JoyAxis> OnChangedJoyAxis;
+    public static event Action<JoyAxis[]> OnChangedBlock;
     private bool opened = false;
     private BlockBehaviour lastBlock = new BlockBehaviour();
-
+    public static JoyAxis currentJoyAxis = JoyAxis.Default;
+    private JoyAxis lastJoyAxis = currentJoyAxis;
 
     public void Awake()
     {
@@ -81,9 +83,9 @@ public class WindowsController : MonoBehaviour
     {
         GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
         {
-            GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MinWidth(75), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
+            GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MinWidth(75f), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
             GUILayout.FlexibleSpace();
-            value = GUILayout.Toggle(value, "", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.ExpandWidth(false) });
+            value = GUILayout.Toggle(value, "", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.ExpandWidth(false)});
         }
         GUILayout.EndHorizontal();
         return value;
@@ -250,20 +252,65 @@ public class JoystickConsoleWindow : SafeUIBehaviour
 
 class JoystickManagerWindow : SafeUIBehaviour
 {
+    public override bool ShouldShowGUI { get; set; } = false;
+
+    public JoystickConsoleWindow consoleWindow;
+
+    private ModData modData = Mod.mod.GetComponent<ModDataManager>().ModData;
+
     public override void SafeAwake()
     {
+
+
         windowName = "Joystick Manager Window Ctrl+F10";
-        windowRect = new Rect();
+        windowRect = new Rect(50,50,300,300);
+
+        consoleWindow = Mod.mod.GetComponent<JoystickConsoleWindow>();
     }
 
 
-    public override bool ShouldShowGUI { get; set; } = false;
+    void Update()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F10))
+        {
+            if (WindowsController.IsBuilding() && !StatMaster.inMenu)
+            {
+                ShouldShowGUI = !ShouldShowGUI;
+            }
+        }
+    }
 
 
 
     protected override void WindowContent(int windowID)
     {
-        throw new NotImplementedException();
+        windowRect = new Rect(50, 50, 300, modData.joyAxes.Length * 30f + 150f);
+
+        consoleWindow.ShouldShowGUI = WindowsController.AddToggle("Joystick Console Window", consoleWindow.ShouldShowGUI);
+
+        GUI.DragWindow(new Rect(0, 0, windowRect.width, 24f));
+    }
+}
+
+public class JoyAxisBlockMapperWindow : SafeUIBehaviour
+{
+    public override bool ShouldShowGUI { get; set; } = false;
+
+    private JoyAxis[] _joyAxes = new JoyAxis[] { };
+
+    public override void SafeAwake()
+    {
+        windowRect = new Rect(15f, 100f, 300f, 300f);
+        windowName = "Axis Block Mapper";
+
+        WindowsController.OnToggleMapper += (value) => { ShouldShowGUI = value; };
+        WindowsController.OnChangedBlock += (value) => { _joyAxes = value; };
+
+    }
+
+    protected override void WindowContent(int windowID)
+    {
+       
     }
 }
 
@@ -283,8 +330,8 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
         windowRect = new Rect(15f, 100f, 300f, 300f); 
         windowName = "Axis Mapper";
 
-        WindowsController.OnToggleMapper += (value) => { ShouldShowGUI = value; };
-        WindowsController.OnChangedBlock += (value) => { _joyAxis = value; };
+        //WindowsController.OnToggleMapper += (value) => { ShouldShowGUI = value; };
+        WindowsController.OnChangedJoyAxis += (value) => { _joyAxis = value; };
     }
 
 
@@ -299,7 +346,7 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
 
         FillRect(new Rect(crossRect.x + crossRect.width * 0.5f + _joyAxis.RawValue * crossRect.width * 0.5f, crossRect.y, 1, crossRect.height), Color.yellow);
 
-        _joyAxis.Enable = WindowsController.AddToggle("Enable", _joyAxis.Enable);
+        //_joyAxes.Enable = WindowsController.AddToggle("Enable", _joyAxes.Enable);
         _joyAxis.JoyIndex  =WindowsController.AddMenu("Joystick", Input.GetJoystickNames(), _joyAxis.JoyIndex);
         _joyAxis.AxisIndex  = WindowsController.AddMenu("Axis", new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }, _joyAxis.AxisIndex);
 

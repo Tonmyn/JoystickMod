@@ -16,7 +16,7 @@ class WaterCannonScript : Block
     {
         waterCannonController = GetComponent<WaterCannonController>();
 
-        animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(0f + joyAxis.CurveValue, 0f), new Keyframe(1f * joyAxis.Max, waterCannonController.StrengthSlider.Value) });
+        animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(0f /*+ joyAxis.CurveValue*/, 0f), new Keyframe(1f */* joyAxis.Max*/CurveMax, waterCannonController.StrengthSlider.Value) });
 
         StrengthSliderValueSign = waterCannonController.StrengthSlider.Value > 0 ? true : false;
     }
@@ -25,13 +25,13 @@ class WaterCannonScript : Block
     {
         if (StrengthSliderValueSign)
         {
-            waterCannonController.isActive = joyAxis.DirectionValue > 0 ? true : false;
+            waterCannonController.isActive = /*joyAxis.DirectionValue*/GetAxesValueDirection() > 0 ? true : false;
         }
 
         var value = 0f;
         //if (LerpToggle.IsActive)
         //{
-        value = Mathf.MoveTowards(targetStrength, animationCurve.Evaluate(joyAxis.CurveValue), joyAxis.Lerp/* * Mathf.Pow(10, (waterCannonController.StrengthSlider.Value.ToString().Length - 1))*/);
+        value = Mathf.MoveTowards(targetStrength, animationCurve.Evaluate(/*joyAxis.CurveValue*/GetAxesValue()), /*joyAxis.Lerp*//* * Mathf.Pow(10, (waterCannonController.StrengthSlider.Value.ToString().Length - 1))*/1f);
         //}
         //else
         //{

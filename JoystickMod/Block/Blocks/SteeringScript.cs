@@ -47,11 +47,11 @@ namespace JoystickMod.Blocks
 
             if (steeringWheel.allowLimits && steeringWheel.LimitsSlider.IsActive)
             {
-                animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(joyAxis.Min, steeringWheel.LimitsSlider.Min), new Keyframe(joyAxis.CurveValue, 0f), new Keyframe(joyAxis.Max, -steeringWheel.LimitsSlider.Max) });
+                animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(/*joyAxis.Min*/CurveMin, steeringWheel.LimitsSlider.Min), new Keyframe(/*joyAxis.CurveValue*/0f, 0f), new Keyframe(/*joyAxis.Max*/CurveMin, -steeringWheel.LimitsSlider.Max) });
             }
             else
             {
-                animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(joyAxis.Min, steeringWheel.SpeedSlider.Value), new Keyframe(joyAxis.CurveValue, 0f), new Keyframe(joyAxis.Max, steeringWheel.SpeedSlider.Value) });
+                animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(/*joyAxis.Min*/CurveMin, steeringWheel.SpeedSlider.Value), new Keyframe(/*joyAxis.CurveValue*/0f, 0f), new Keyframe(/*joyAxis.Max*/CurveMax, steeringWheel.SpeedSlider.Value) });
             }
 
 
@@ -59,22 +59,22 @@ namespace JoystickMod.Blocks
 
         public override void SimulateUpdateAlways_Enable()
         {
-
+            float axesValue = GetAxesValue();
 
             rigidbody.WakeUp();
             if (steeringWheel.allowLimits && steeringWheel.LimitsSlider.IsActive)
             {
                 var value = 0f;
-                float angleSpeed = Time.deltaTime * 100f * steeringWheel.SpeedSlider.Value * joyAxis.Lerp;
-                float targetValue = steeringWheel.Flipped ? -animationCurve.Evaluate(joyAxis.CurveValue) : animationCurve.Evaluate(joyAxis.CurveValue);
+                float angleSpeed = Time.deltaTime * 100f * steeringWheel.SpeedSlider.Value /** joyAxis.Lerp*/;
+                float targetValue = steeringWheel.Flipped ? -animationCurve.Evaluate(axesValue) : animationCurve.Evaluate(axesValue);
 
                 value = Mathf.MoveTowards(steeringWheel.AngleToBe, targetValue, angleSpeed);
                 steeringWheel.AngleToBe = value;
             }
             else
             {
-                float angleSpeed = animationCurve.Evaluate(joyAxis.CurveValue) * joyAxis.Lerp;
-                steeringWheel.AngleToBe += joyAxis.DirectionValue * Time.deltaTime * 100f * steeringWheel.targetAngleSpeed * (steeringWheel.Flipped ? 1 : -1) * angleSpeed;
+                float angleSpeed = animationCurve.Evaluate(axesValue) /** joyAxis.Lerp*/;
+                steeringWheel.AngleToBe +=/* joyAxis.DirectionValue*/GetAxesValueDirection() * Time.deltaTime * 100f * steeringWheel.targetAngleSpeed * (steeringWheel.Flipped ? 1 : -1) * angleSpeed;
 
             }
         }
