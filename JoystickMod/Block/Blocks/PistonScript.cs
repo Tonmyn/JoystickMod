@@ -25,7 +25,7 @@ class PistonScript : Block
     {
         var value = 0f;
 
-        value = Mathf.MoveTowards(targetPos, animationCurve.Evaluate(/*joyAxis.CurveValue*/GetAxesValue()), /*joyAxis.Lerp **/ sliderCompress.SpeedSlider.Value * Time.deltaTime * 6f);
+        value = Mathf.MoveTowards(targetPos, animationCurve.Evaluate(/*joyAxis.CurveValue*/GetAxesValue()), Lerp * sliderCompress.SpeedSlider.Value * Time.deltaTime * 6f);
 
         targetPos = value;
         sliderCompress.posToBe = targetPos;

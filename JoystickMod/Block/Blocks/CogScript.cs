@@ -24,7 +24,8 @@ class CogScript : Block
 
     public override void SimulateUpdateAlways_Enable()
     {
-        cogMotorControllerHinge.Input = /*joyAxis.DirectionValue*/GetAxesValueDirection();
+        //cogMotorControllerHinge.Input = /*joyAxis.DirectionValue*/GetAxesValueDirection();
+        cogMotorControllerHinge.Input = GetAxesValueDirection();
     }
     float targetSpeed = 0f;
     public override void SimulateFixedUpdate_Enable()
@@ -45,9 +46,9 @@ class CogScript : Block
 
         float value = 0f;
 
-        value = Mathf.MoveTowards(targetSpeed, animationCurve.Evaluate(Mathf.Abs(/*joyAxis.CurveValue*/GetAxesValue())), /*joyAxis.Lerp **/ Time.deltaTime);
+        value = Mathf.MoveTowards(targetSpeed, animationCurve.Evaluate(Mathf.Abs(/*joyAxis.CurveValue*/GetAxesValue())), Lerp * Time.deltaTime);
 
-        targetSpeed = value;
+        targetSpeed =value;
         cogMotorControllerHinge.SpeedSlider.Value = targetSpeed;
 
     }

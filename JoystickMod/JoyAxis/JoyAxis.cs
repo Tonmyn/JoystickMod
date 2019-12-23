@@ -1,7 +1,9 @@
 ﻿using Modding.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using UnityEngine;
 
@@ -44,7 +46,7 @@ namespace JoystickMod
         //[Modding.Serialization.CanBeEmpty]
         //public bool Enable { get; set; } =false;
         [Modding.Serialization.CanBeEmpty]
-        public Guid Guid { get; private set; } = Guid.NewGuid();
+        public Guid Guid { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Is true if the axis tuning has been changed since the last call.
@@ -62,10 +64,11 @@ namespace JoystickMod
         public float CurveValue { get { return Process(RawValue); } } 
         public int DirectionValue { get { return (int)ConverAxisValueToNormal(); } }
 
-        public JoyAxis( int joyIndex, int axisIndex, float sensitivity, float curvature, float deadzone, bool invert, float offsetX, float offsetY, float min, float max,float lerp)
+        public JoyAxis( int joyIndex, int axisIndex, string name,float sensitivity, float curvature, float deadzone, bool invert, float offsetX, float offsetY, float min, float max,float lerp)
         {
             JoyIndex = joyIndex;
             AxisIndex = axisIndex;
+            Name = name;
 
             Min = min;
             Max = max;
@@ -109,7 +112,7 @@ namespace JoystickMod
             Max = 1f;
             Lerp = 1f;
         }
-        public static JoyAxis Default { get { return new JoyAxis(0, 0, 1f, 1f, 0f, false, 0f, 0f, -1f, 1f, 1f); } }
+        public static JoyAxis Default { get { return new JoyAxis(0, 0,"Joy Axis", 1f, 1f, 0f, false, 0f, 0f, -1f, 1f, 1f); } }
 
         /// <summary>
         /// Returns processed output value for given input value.
@@ -128,6 +131,44 @@ namespace JoystickMod
             value *= Sensitivity * (Invert ? -1 : 1);
             value = value > 0 ? Mathf.Pow(value, Curvature) : -Mathf.Pow(-value, Curvature);
             return Mathf.Clamp(value + OffsetY, -1, 1);
+        }
+
+        public JoyAxis DeepCopy()
+        {
+            JoyAxis joyAxis;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                BinaryFormatter bFormatter = new BinaryFormatter();
+                bFormatter.Serialize(stream, this);
+                stream.Seek(0, SeekOrigin.Begin);
+                joyAxis = (JoyAxis)bFormatter.Deserialize(stream);
+                stream.Close();
+            }
+            return joyAxis;
+        }
+
+        public JoyAxis Copy()
+        {
+            JoyAxis joyAxis = new JoyAxis();
+
+            joyAxis.Guid = Guid;
+
+            joyAxis.JoyIndex = JoyIndex;
+            joyAxis.AxisIndex = AxisIndex;
+            joyAxis.Name = Name;
+
+            joyAxis.Min = Min;
+            joyAxis.Max = Max;
+
+            joyAxis.Sensitivity = Sensitivity;
+            joyAxis.Curvature = Curvature;
+            joyAxis.Deadzone =Deadzone;
+            joyAxis.OffsetX = OffsetX;
+            joyAxis.OffsetY = OffsetY;
+            joyAxis.Invert = Invert;
+            joyAxis.Lerp =Lerp;
+
+            return joyAxis;
         }
 
         public static float GetAxisValue(JoyAxis axis)
@@ -158,6 +199,5 @@ namespace JoystickMod
         {
             return string.Format("name:{0},JoyIndex:{1},AxisIndex:{2},Sensitivity:{3},Curvature:{4},Deadzone:{5},Invert:{6},OffsetX:{7},OffsetY:{8},Min:{9},Max:{10},Lerp:{11}", Name, JoyIndex, AxisIndex, Sensitivity, Curvature, Deadzone, Invert, OffsetX, OffsetY, Min, Max, Lerp);
         }
-
     }
 }

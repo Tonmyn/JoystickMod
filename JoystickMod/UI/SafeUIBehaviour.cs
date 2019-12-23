@@ -54,14 +54,16 @@ namespace JoystickMod
         public abstract bool ShouldShowGUI { get; set; }
 
         public virtual void SafeAwake() { }
-
+                                                                                                                       
         public bool AddToggle(string title, bool value = false)
         {
+            var rect = windowRect;
+
             GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
             {
-                GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MinWidth(75f), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
-                GUILayout.FlexibleSpace();
-                value = GUILayout.Toggle(value, "", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.ExpandWidth(false) });
+                GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MaxWidth(rect.width*0.8f), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
+                GUILayout.Space(rect.width * 0.15f);
+                value = GUILayout.Toggle(value, "", new GUILayoutOption[] { GUILayout.Width(rect.width * 0.05f), GUILayout.ExpandWidth(false) });
             }
             GUILayout.EndHorizontal();
             return value;

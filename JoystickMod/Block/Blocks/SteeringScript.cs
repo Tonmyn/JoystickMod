@@ -47,7 +47,7 @@ namespace JoystickMod.Blocks
 
             if (steeringWheel.allowLimits && steeringWheel.LimitsSlider.IsActive)
             {
-                animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(/*joyAxis.Min*/CurveMin, steeringWheel.LimitsSlider.Min), new Keyframe(/*joyAxis.CurveValue*/0f, 0f), new Keyframe(/*joyAxis.Max*/CurveMin, -steeringWheel.LimitsSlider.Max) });
+                animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(/*joyAxis.Min*/CurveMin, steeringWheel.LimitsSlider.Min), new Keyframe(/*joyAxis.CurveValue*/0f, 0f), new Keyframe(/*joyAxis.Max*/CurveMax, -steeringWheel.LimitsSlider.Max) });
             }
             else
             {
@@ -65,7 +65,7 @@ namespace JoystickMod.Blocks
             if (steeringWheel.allowLimits && steeringWheel.LimitsSlider.IsActive)
             {
                 var value = 0f;
-                float angleSpeed = Time.deltaTime * 100f * steeringWheel.SpeedSlider.Value /** joyAxis.Lerp*/;
+                float angleSpeed = Time.deltaTime * 100f * steeringWheel.SpeedSlider.Value * Lerp;
                 float targetValue = steeringWheel.Flipped ? -animationCurve.Evaluate(axesValue) : animationCurve.Evaluate(axesValue);
 
                 value = Mathf.MoveTowards(steeringWheel.AngleToBe, targetValue, angleSpeed);
@@ -73,7 +73,7 @@ namespace JoystickMod.Blocks
             }
             else
             {
-                float angleSpeed = animationCurve.Evaluate(axesValue) /** joyAxis.Lerp*/;
+                float angleSpeed = animationCurve.Evaluate(axesValue) * Lerp;
                 steeringWheel.AngleToBe +=/* joyAxis.DirectionValue*/GetAxesValueDirection() * Time.deltaTime * 100f * steeringWheel.targetAngleSpeed * (steeringWheel.Flipped ? 1 : -1) * angleSpeed;
 
             }

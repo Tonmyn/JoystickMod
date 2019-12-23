@@ -11,28 +11,70 @@ namespace JoystickMod
     {
         public ModData ModData { get; set; }
 
+        public event Action<ModData> OnModDataChanged;
+
         private void Awake()
         {
             ModData = LoadData();
         }
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                var ja = new JoyAxis();
-                ja.Name = "test joy axis";
-                ja.Sensitivity = 5f;
+            //if (Input.GetKeyDown(KeyCode.T))
+            //{
+            //    var ja = new JoyAxis();
+            //    ja.Name = "test joy axis";
+            //    ja.Sensitivity = 5f;
 
-                var list = ModData.joyAxes.ToList();
-                list.Add(ja);
-                ModData.joyAxes = list.ToArray(); ;
+            //    var list = ModData.joyAxes.ToList();
+            //    list.Add(ja);
+            //    ModData.joyAxes = list.ToArray(); ;
+            //    SaveData();
+            //}
+
+            //if (Input.GetKeyDown(KeyCode.L))
+            //{
+            //    LoadData();
+            //    Debug.Log(ModData.ToString());
+            //}
+        }
+
+        public void AddAxis(JoyAxis joyAxis)
+        {
+            var axes = ModData.joyAxes.ToList();
+            axes.Add(joyAxis);
+
+            ModData.joyAxes = axes.ToArray();
+            SaveData();
+        }
+        public void RemoveAxis(JoyAxis joyAxis)
+        {
+            var axes = ModData.joyAxes.ToList();
+
+            if (axes.Exists(match => match.Guid == joyAxis.Guid))
+            {
+                var item = axes.Find(match => match.Guid == joyAxis.Guid);
+                axes.Remove(item);
+                ModData.joyAxes = axes.ToArray();
                 SaveData();
             }
+        }
+        public void ReplaceAxis(JoyAxis joyAxis)
+        {
+            var axes = ModData.joyAxes.ToList();
+            var axis = axes.Find(match => match.Guid == joyAxis.Guid);
 
-            if (Input.GetKeyDown(KeyCode.L))
+            if (axis != null)
             {
-                LoadData();
-                Debug.Log(ModData.ToString());
+                Debug.Log("replace");
+                axes.RemoveAll(match => match.Guid == axis.Guid);
+                axes.Add(joyAxis);
+                ModData.joyAxes = axes.ToArray();
+
+                SaveData();
+            }
+            else
+            {
+                AddAxis(joyAxis);
             }
         }
 
@@ -61,6 +103,7 @@ namespace JoystickMod
         }
         public void SaveData()
         {
+            OnModDataChanged?.Invoke(ModData);
             ModIO.SerializeXml(ModData ?? new ModData(), "Data.xml", true);
         }
     }

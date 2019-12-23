@@ -31,7 +31,7 @@ class WaterCannonScript : Block
         var value = 0f;
         //if (LerpToggle.IsActive)
         //{
-        value = Mathf.MoveTowards(targetStrength, animationCurve.Evaluate(/*joyAxis.CurveValue*/GetAxesValue()), /*joyAxis.Lerp*//* * Mathf.Pow(10, (waterCannonController.StrengthSlider.Value.ToString().Length - 1))*/1f);
+        value = Mathf.MoveTowards(targetStrength, animationCurve.Evaluate(/*joyAxis.CurveValue*/GetAxesValue()), Lerp * Mathf.Pow(10, (waterCannonController.StrengthSlider.Value.ToString().Length - 1)));
         //}
         //else
         //{

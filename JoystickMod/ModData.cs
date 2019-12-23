@@ -5,6 +5,8 @@ using System.Text;
 using UnityEngine;
 using Modding;
 using Modding.Serialization;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace JoystickMod
 {
@@ -17,8 +19,6 @@ namespace JoystickMod
         [Modding.Serialization.CanBeEmpty]
         public JoyAxis[] joyAxes;
 
-
-
         public ModData()
         {
             consoloWindowShowEnabled = false;
@@ -26,14 +26,6 @@ namespace JoystickMod
             joystickManagerWindowShowEnabled = false;
 
             joyAxes = new JoyAxis[] { /*new JoyAxis() */};
-        }
-
-        public void AddAxis(JoyAxis joyAxis)
-        {
-            var axes = joyAxes.ToList();
-            axes.Add(joyAxis);
-
-            joyAxes = axes.ToArray();
         }
 
         public override string ToString()
@@ -49,7 +41,5 @@ namespace JoystickMod
 
             return str;
         }
-
-
     }
 }
