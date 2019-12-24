@@ -62,9 +62,14 @@
     <Compile Include="UI\JoystickWindow.cs" />
     <Compile Include="UI\SafeUIBehaviour.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\icon.png" />
+    <Content Include="XML\Mod.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetPath)" "%25BESIEGE_LOCATION%25\Besiege_Data\Mods\$(ProjectName)\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>copy /Y "$(TargetPath)" "%25BESIEGE_LOCATION%25\Besiege_Data\Mods\$(ProjectName)\$(TargetFileName)"
+copy /Y "$(ProjectDir)XML\*" "%25BESIEGE_LOCATION%25\Besiege_Data\Mods\$(TargetName)\"
+copy /Y "$(ProjectDir)Resources\*" "%25BESIEGE_LOCATION%25\Besiege_Data\Mods\$(TargetName)\Resources\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
