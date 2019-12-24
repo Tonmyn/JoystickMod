@@ -41,9 +41,17 @@ namespace JoystickMod
                 if (isFirstFrame)
                 {
                     isFirstFrame = false;
-                    joyAxes = BB.BuildingBlock.GetComponent<Block>().joyAxes;
                     BB = GetComponent<BlockBehaviour>();
                     rigidbody = GetComponent<Rigidbody>();
+
+                    var block = BB.BuildingBlock.GetComponent<Block>();
+                    joyAxes = block.joyAxes;
+                    JoyEnabled = block.JoyEnabled;
+                    Invert = block.Invert;
+                    CurveMax = block.CurveMax;
+                    CurveMin = block.CurveMin;
+                    Lerp = block.Lerp;
+                                       
                     if (JoyEnabled) { OnSimulateStart_Enable(); }
                 }
 

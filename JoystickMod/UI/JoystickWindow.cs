@@ -492,15 +492,21 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
         }
         GUILayout.EndHorizontal();
 
-        JoyAxis.JoyIndex  =AddMenu("Joystick", Input.GetJoystickNames(), JoyAxis.JoyIndex);
-        JoyAxis.AxisIndex  = AddMenu("Axis", new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9","10","11","12","13","14" }, JoyAxis.AxisIndex);
+        GUILayout.BeginVertical();
+        {
+            JoyAxis.JoyIndex = AddMenu("Joystick", Input.GetJoystickNames(), JoyAxis.JoyIndex);
+            JoyAxis.AxisIndex = AddMenu("Axis", new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14" }, JoyAxis.AxisIndex);
 
-        JoyAxis.Invert = AddToggle("Invert", JoyAxis.Invert);
+            JoyAxis.Invert = AddToggle("Invert", JoyAxis.Invert);
 
-        JoyAxis.Sensitivity = AddSlider("Sensitivity", JoyAxis.Sensitivity, 0f, 5f);
-        JoyAxis.Curvature =AddSlider("Curvature", JoyAxis.Curvature, 0f, 3f);
-        JoyAxis.Deadzone =AddSlider("Deadzone", JoyAxis.Deadzone, 0f, 0.5f);
-        JoyAxis.Lerp = AddSlider("Lerp", JoyAxis.Lerp, 0f, 1f);
+            JoyAxis.Sensitivity = AddSlider("Sensitivity", JoyAxis.Sensitivity, 0f, 5f);
+            JoyAxis.Curvature = AddSlider("Curvature", JoyAxis.Curvature, 0f, 3f);
+            JoyAxis.Deadzone = AddSlider("Deadzone", JoyAxis.Deadzone, 0f, 0.5f);
+            JoyAxis.Lerp = AddSlider("Lerp", JoyAxis.Lerp, 0f, 1f);
+            JoyAxis.OffsetX = AddSlider("Offset X", JoyAxis.OffsetX, -1f, 1f);
+            JoyAxis.OffsetY = AddSlider("Offset Y", JoyAxis.OffsetY, -1f, 1f);
+        }
+        GUILayout.EndVertical();
 
         GUI.DragWindow(new Rect(0, 0, windowRect.width, 20));
     }
