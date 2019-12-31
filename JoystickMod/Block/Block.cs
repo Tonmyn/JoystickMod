@@ -12,9 +12,11 @@ namespace JoystickMod
 {
     public class Block : MonoBehaviour
     {
+        public static bool JoystickEnabled { get; set; } = true;
+
         public string[] AxesGuid = new string[] { };
         public JoyAxis[] joyAxes = new JoyAxis[] { };
-        public bool JoyEnabled = false;
+        public bool AxisEnabled = false;
         public bool Invert = false;
         public float CurveMax = 1f;
         public float CurveMin = -1f;
@@ -46,16 +48,16 @@ namespace JoystickMod
 
                     var block = BB.BuildingBlock.GetComponent<Block>();
                     joyAxes = block.joyAxes;
-                    JoyEnabled = block.JoyEnabled;
+                    AxisEnabled = block.AxisEnabled;
                     Invert = block.Invert;
                     CurveMax = block.CurveMax;
                     CurveMin = block.CurveMin;
                     Lerp = block.Lerp;
                                        
-                    if (JoyEnabled) { OnSimulateStart_Enable(); }
+                    if (AxisEnabled && JoystickEnabled) { OnSimulateStart_Enable(); }
                 }
 
-                if (JoyEnabled)
+                if (AxisEnabled && JoystickEnabled)
                 {
                     SimulateUpdateAlways_Enable();
                 }
@@ -69,7 +71,7 @@ namespace JoystickMod
         {
             if (BB.isSimulating && !isFirstFrame)
             {
-                if (JoyEnabled)
+                if (AxisEnabled && JoystickEnabled)
                 {
                     SimulateFixedUpdate_Enable();
                 }
@@ -79,7 +81,7 @@ namespace JoystickMod
         {
             if (BB.isSimulating && !isFirstFrame)
             {
-                if (JoyEnabled)
+                if (AxisEnabled && JoystickEnabled)
                 {
                     SimulateLateUpdate_Enable();
                 }
@@ -153,7 +155,7 @@ namespace JoystickMod
                         v.Data.Write("JoyAxis " + index++, axis.Guid.ToString());
                     }
                     v.Data.Write("BlockAxis-Number", index);
-                    v.Data.Write("BlockAxis-Enabled", JoyEnabled);
+                    v.Data.Write("BlockAxis-Enabled", AxisEnabled);
                     v.Data.Write("BlockAxis-Invert", Invert);
                     v.Data.Write("BlockAxis-CurveMax", CurveMax);
                     v.Data.Write("BlockAxis-CurveMin", CurveMin);
@@ -165,7 +167,7 @@ namespace JoystickMod
         }
         public void OnLoad(Modding.Blocks.BlockInfo BlockInfo)
         {
-            try { JoyEnabled = BlockInfo.Data.ReadBool("BlockAxis-Enabled"); } catch { }
+            try { AxisEnabled = BlockInfo.Data.ReadBool("BlockAxis-Enabled"); } catch { }
             try { joyAxes = formatDataToJoyAxes(BlockInfo); } catch { }
             try { Invert = BlockInfo.Data.ReadBool("BlockAxis-Invert"); } catch { }
             try { CurveMax = BlockInfo.Data.ReadFloat("BlockAxis-CurveMax"); } catch { }

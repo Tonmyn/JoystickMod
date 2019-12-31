@@ -48,7 +48,7 @@ namespace JoystickMod
                         if (_copyBlockSource != null)
                         {
                             Block axisBlock = block.GetComponent<Block>();
-                            axisBlock.JoyEnabled = _copyBlockSource.JoyEnabled;
+                            axisBlock.AxisEnabled = _copyBlockSource.AxisEnabled;
                             axisBlock.Invert = _copyBlockSource.Invert;
 
                             List<JoyAxis> joyAxes = new List<JoyAxis>();

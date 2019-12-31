@@ -205,28 +205,19 @@ public class JoystickConsoleWindow : SafeUIBehaviour
     public override void SafeAwake()
     {
         windowRect = new Rect(15f, 100f, 356f, 180f);
-        windowName = "Joystick Console Window";
-    }
 
-    public void Update()
-    {
-        //if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F10))
-        //{
-            //if (WindowsController.IsBuilding() && !StatMaster.inMenu)
-            //{
-            //    ShouldShowGUI = !ShouldShowGUI;
-            //}
-        //}
     }
 
     protected override void WindowContent(int windowID)
     {
+        windowName = Language.ConsoleWindow;
+
         GUILayout.BeginVertical();
         {
             GUILayout.BeginHorizontal();
             {
                 GUILayout.FlexibleSpace();
-                GUILayout.Label("Select Joystick");
+                GUILayout.Label(Language.JoystickList);
                 GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
@@ -237,7 +228,7 @@ public class JoystickConsoleWindow : SafeUIBehaviour
             GUILayout.BeginHorizontal();
             {
                 GUILayout.FlexibleSpace();
-                GUILayout.Label("Axis Values");
+                GUILayout.Label(Language.AxesList);
                 GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
@@ -245,7 +236,7 @@ public class JoystickConsoleWindow : SafeUIBehaviour
             AxisValues.Clear();
             for (int i = 0; i < 10; i++)
             {
-                AxisValues.Add(string.Format("Axis {0} - Value: {1}", i, JoyAxis.GetAxisValue(joyIndex, i).ToString("# 0.00")));
+                AxisValues.Add(string.Format("{0} {1} - {2}: {3}",Language.Axis, i,Language.Value, JoyAxis.GetAxisValue(joyIndex, i).ToString("# 0.00")));
             }
             GUILayout.SelectionGrid(-1, AxisValues.ToArray(), 2, new GUILayoutOption[] { GUILayout.MinWidth(100) });
         }
@@ -268,8 +259,8 @@ class JoystickManagerWindow : SafeUIBehaviour
     {
         dataManager = Mod.mod.GetComponent<ModDataManager>();
 
-        windowName = "Joystick Manager Window Ctrl+F10";
-        windowRect = /*new Rect(50,50,300,300)*/new Rect(50, 50, 300, dataManager.ModData.joyAxes.Length * 30f + 150f);
+
+        windowRect = new Rect(50, 50, 300, dataManager.ModData.joyAxes.Length * 30f + 150f);
 
         consoleWindow = Mod.mod.GetComponent<JoystickConsoleWindow>();
         AxisMapperWindow = Mod.mod.GetComponent<JoyAxisMapperWindow>();
@@ -295,14 +286,17 @@ class JoystickManagerWindow : SafeUIBehaviour
 
     protected override void WindowContent(int windowID)
     {
+        windowName = Language.ManagerWindow;
+
         GUILayout.BeginVertical();
         {
-            consoleWindow.ShouldShowGUI = AddToggle("Console Window", consoleWindow.ShouldShowGUI);
-            AxisMapperWindow.ShouldShowGUI = AddToggle("Axis Mapper Window", AxisMapperWindow.ShouldShowGUI);
+            consoleWindow.ShouldShowGUI = AddToggle(Language.ConsoleWindowToggle, consoleWindow.ShouldShowGUI);
+            AxisMapperWindow.ShouldShowGUI = AddToggle(Language.AxisWindowToggle, AxisMapperWindow.ShouldShowGUI);
+            Block.JoystickEnabled = AddToggle(Language.JoystickSwitchToggle, Block.JoystickEnabled);
         }
         GUILayout.EndVertical();
 
-        GUILayout.Label("Axes :", WindowsController.titleStyle2);
+        GUILayout.Label(Language.AxesList+":", WindowsController.titleStyle2);
 
         try
         {
@@ -365,7 +359,7 @@ public class JoyAxisBlockMapperWindow : SafeUIBehaviour
     public override void SafeAwake()
     {
         windowRect = new Rect(15f, 100f, 300f, 300f);
-        windowName = "Axis Block Mapper";
+    
 
         WindowsController.OnToggleMapper += (value) => { ShouldShowGUI = value; };
         WindowsController.OnChangedBlock += (value) => { block = value; };
@@ -375,17 +369,19 @@ public class JoyAxisBlockMapperWindow : SafeUIBehaviour
 
     protected override void WindowContent(int windowID)
     {
+        windowName = Language.BlockWindow;
+
         GUILayout.BeginVertical();
         {
-            block.JoyEnabled = AddToggle("Block Axis Enabled", block.JoyEnabled);
-            block.Invert = AddToggle("Block Axis Invert", block.Invert);
-            block.CurveMax = AddSlider("Curve Max", block.CurveMax, 0, 3f);
-            block.CurveMin = AddSlider("Curve Min", block.CurveMin, -3f, 0);
-            block.Lerp = AddSlider("Lerp", block.Lerp);
+            block.AxisEnabled = AddToggle(Language.BlockAxisEnabled, block.AxisEnabled);
+            block.Invert = AddToggle(Language.BlockAxisInvert, block.Invert);
+            block.CurveMax = AddSlider(Language.CurveMax, block.CurveMax, 0, 3f);
+            block.CurveMin = AddSlider(Language.CurveMin, block.CurveMin, -3f, 0);
+            block.Lerp = AddSlider(Language.Lerp, block.Lerp);
         }
         GUILayout.EndVertical();
 
-        GUILayout.Label("Block's Axes:", WindowsController.titleStyle2);
+        GUILayout.Label(Language.Block_Axes + ":", WindowsController.titleStyle2);
 
         GUILayout.BeginVertical();
         {
@@ -446,7 +442,6 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
     public override void SafeAwake()
     {
         windowRect = new Rect(15f, 100f, 300f, 300f); 
-        windowName = "Axis Mapper";
 
         WindowsController.OnChangedJoyAxis += (value) => { JoyAxis = value.Copy(); };
 
@@ -456,26 +451,25 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
 
     protected override void WindowContent(int windowID)
     {
+        windowName = Language.AxisWindow;
+
         Rect crossRect = new Rect((windowRect.width - windowRect.width * 0.9f) * 0.5f, 46f * 0f + 23 , windowRect.width * 0.9f, windowRect.width * 0.9f);
         _graphRect = crossRect;
 
         DrawCrossRect(crossRect, Color.gray);
         DrawGraph();
-        GUI.Label(new Rect(30, 50, 150, 24), "Output Value: " + JoyAxis.CurveValue.ToString("#0.00"));
-
+        GUI.Label(new Rect(30, 50, 150, 24), Language.OutputValue + ": " + JoyAxis.CurveValue.ToString("#0.00"));
         FillRect(new Rect(crossRect.x + crossRect.width * 0.5f + JoyAxis.RawValue * crossRect.width * 0.5f, crossRect.y, 1, crossRect.height), Color.yellow);
 
-        GUILayout.BeginHorizontal();
+        GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
         {
-            GUILayout.Label("Axis Name:", new GUILayoutOption[] { GUILayout.MaxWidth(75f) });
+            GUILayout.Label(Language.AxisName, new GUILayoutOption[] { GUILayout.MaxWidth(75f) }); 
             JoyAxis.Name = GUILayout.TextField(JoyAxis.Name, new GUILayoutOption[] { GUILayout.ExpandWidth(false), GUILayout.MaxWidth(windowRect.width * 0.45f) });
             
-            if (GUILayout.Button("Save"))
+            if (GUILayout.Button(Language.Save))
             {
                 if (dataManager.ModData.joyAxes.ToList().Exists(match => match.Guid == JoyAxis.Guid))
                 {
-                    //dataManager.RemoveAxis(JoyAxis);
-                    //dataManager.AddAxis(JoyAxis.Copy());
                     dataManager.ReplaceAxis(JoyAxis.Copy());
                 }
                 else
@@ -484,7 +478,7 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
                 }
             }
 
-            if (GUILayout.Button("Save as"))
+            if (GUILayout.Button(Language.SaveAs))
             {
                 JoyAxis.Guid = Guid.NewGuid();
                 dataManager.AddAxis(JoyAxis.Copy());
@@ -494,17 +488,17 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
 
         GUILayout.BeginVertical();
         {
-            JoyAxis.JoyIndex = AddMenu("Joystick", Input.GetJoystickNames(), JoyAxis.JoyIndex);
-            JoyAxis.AxisIndex = AddMenu("Axis", new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14" }, JoyAxis.AxisIndex);
+            JoyAxis.JoyIndex = AddMenu(Language.Joystick, Input.GetJoystickNames(), JoyAxis.JoyIndex);
+            JoyAxis.AxisIndex = AddMenu(Language.Axis, new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14" }, JoyAxis.AxisIndex);
 
-            JoyAxis.Invert = AddToggle("Invert", JoyAxis.Invert);
+            JoyAxis.Invert = AddToggle(Language.Invert, JoyAxis.Invert);
 
-            JoyAxis.Sensitivity = AddSlider("Sensitivity", JoyAxis.Sensitivity, 0f, 5f);
-            JoyAxis.Curvature = AddSlider("Curvature", JoyAxis.Curvature, 0f, 3f);
-            JoyAxis.Deadzone = AddSlider("Deadzone", JoyAxis.Deadzone, 0f, 0.5f);
-            JoyAxis.Lerp = AddSlider("Lerp", JoyAxis.Lerp, 0f, 1f);
-            JoyAxis.OffsetX = AddSlider("Offset X", JoyAxis.OffsetX, -1f, 1f);
-            JoyAxis.OffsetY = AddSlider("Offset Y", JoyAxis.OffsetY, -1f, 1f);
+            JoyAxis.Sensitivity = AddSlider(Language.Sensitivity, JoyAxis.Sensitivity, 0f, 5f);
+            JoyAxis.Curvature = AddSlider(Language.Curvature, JoyAxis.Curvature, 0f, 3f);
+            JoyAxis.Deadzone = AddSlider(Language.Deadzone, JoyAxis.Deadzone, 0f, 0.5f);
+            JoyAxis.Lerp = AddSlider(Language.Lerp, JoyAxis.Lerp, 0f, 1f);
+            JoyAxis.OffsetX = AddSlider(Language.OffsetX, JoyAxis.OffsetX, -1f, 1f);
+            JoyAxis.OffsetY = AddSlider(Language.OffsetY, JoyAxis.OffsetY, -1f, 1f);
         }
         GUILayout.EndVertical();
 

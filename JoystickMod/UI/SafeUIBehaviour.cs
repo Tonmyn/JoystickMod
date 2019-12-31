@@ -12,6 +12,7 @@ namespace JoystickMod
         public Rect windowRect = new Rect(0, 0, 192, 128);
         public int windowID { get; protected set; } = ModUtility.GetWindowId();
         public string windowName { get; set; } = "";
+        public ILanguage Language;
         GameObject background;
 
         private void Awake()
@@ -20,6 +21,9 @@ namespace JoystickMod
             background.transform.SetParent(gameObject.transform);
             background.layer = 13;
             background.AddComponent<BoxCollider>();
+
+            Language = LanguageManager.Instance.CurrentLanguage;
+            LanguageManager.Instance.OnLanguageChanged += (value) => { Language = value; };
             SafeAwake();
         }
         void OnGUI()
@@ -72,17 +76,16 @@ namespace JoystickMod
         {
             GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
             {
-                GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MinWidth(75), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
-                //GUILayout.FlexibleSpace();
+                GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MaxWidth(windowRect.width*0.35f), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
+
                 GUILayout.Space(10);
                 GUILayout.BeginVertical();
                 GUILayout.Space(10);
-                value = GUILayout.HorizontalSlider(value, min, max, new GUILayoutOption[] { GUILayout.MinWidth(75), GUILayout.Height(15f) });
+                value = GUILayout.HorizontalSlider(value, min, max, new GUILayoutOption[] { GUILayout.MaxWidth(windowRect.width * 0.525f), GUILayout.Height(25f) });
                 GUILayout.EndVertical();
-                //GUILayout.Space(width * 0.05f);
-                //GUILayout.FlexibleSpace();
+
                 GUILayout.Space(10);
-                value = float.Parse(GUILayout.TextField(value.ToString("#0.000"), new GUILayoutOption[] { GUILayout.MinWidth(50), GUILayout.ExpandWidth(false), GUILayout.Height(25f) }));
+                value = float.Parse(GUILayout.TextField(value.ToString("#0.000"), new GUILayoutOption[] { GUILayout.MaxWidth(windowRect.width * 0.125f), GUILayout.ExpandWidth(false), GUILayout.Height(25f) }));
             }
             GUILayout.EndHorizontal();
             return value;
