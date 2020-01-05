@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\icon.png" />
+    <Content Include="Resources\UI\window-background.png" />
     <Content Include="XML\Mod.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

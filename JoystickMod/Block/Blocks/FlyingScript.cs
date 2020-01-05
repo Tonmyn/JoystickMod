@@ -6,36 +6,36 @@ using UnityEngine;
 
 namespace JoystickMod.Blocks
 {
-    //class FlyingScript:Block
-    //{
-    //    FlyingController flyingController;
+    class FlyingScript : Block
+    {
+        FlyingController flyingController;
 
-    //    public override void OnSimulateStart_Enable()
-    //    {
-    //        flyingController = GetComponent<FlyingController>();
-    //    }
+        public override void OnSimulateStart_Enable()
+        {
+            flyingController = BB.GetComponent<FlyingController>();
 
-    //    public override void SimulateUpdateAlways_Enable()
-    //    {
-    //        Fly(Input.GetKey(KeyCode.F));
+        }
 
-    //         void Fly(bool f)
-    //        {
-    //            if (f && !flyingController.isFrozen && flyingController.canFly)
-    //            {
-    //                flyingController.speedToGo = new Vector3(0, 0, 100f);
-    //                flyingController.lerpSpeed = 6f;
-    //                rigidbody.drag = 1.5f;
-    //                flyingController.flying = true;
-    //            }
-    //            else
-    //            {
-    //                flyingController.speedToGo = Vector3.zero;
-    //                rigidbody.drag = 0.5f;
-    //                flyingController.flying = false;
-    //            }
-    //        }
-    //    }
+        public override void SimulateUpdateAlways_Enable()
+        {
+            if (GetAxesValue() != 0)
+            {
+                flyingController.flying = true;
+            }
+        }
 
-    //}
+        public override void SimulateFixedUpdateAlways_Enable()
+        {
+            if (BB.noRigidbody)
+            {
+                enabled = false;
+                return;
+            }
+            var force = 100f * flyingController.SpeedSlider.Value;
+            var vector = new Vector3(0, force - (flyingController.Rigidbody.velocity * flyingController.dragScaler).magnitude, 0);
+
+            flyingController.Rigidbody.AddRelativeForce(vector);
+        }
+
+    }
 }

@@ -60,7 +60,7 @@ namespace JoystickMod
         [Modding.Serialization.CanBeEmpty]
         public float Max { get; set; } = 1f;
 
-        public float RawValue { get { return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", JoyIndex, AxisIndex)) * 10f; } }
+        public float RawValue { get { return GetAxisValue(JoyIndex, AxisIndex); } }
         public float CurveValue { get { return Process(RawValue); } } 
         public int DirectionValue { get { return (int)ConverAxisValueToNormal(); } }
 
@@ -133,20 +133,6 @@ namespace JoystickMod
             return Mathf.Clamp(value + OffsetY, -1, 1);
         }
 
-        public JoyAxis DeepCopy()
-        {
-            JoyAxis joyAxis;
-            using (MemoryStream stream = new MemoryStream())
-            {
-                BinaryFormatter bFormatter = new BinaryFormatter();
-                bFormatter.Serialize(stream, this);
-                stream.Seek(0, SeekOrigin.Begin);
-                joyAxis = (JoyAxis)bFormatter.Deserialize(stream);
-                stream.Close();
-            }
-            return joyAxis;
-        }
-
         public JoyAxis Copy()
         {
             JoyAxis joyAxis = new JoyAxis();
@@ -173,7 +159,7 @@ namespace JoystickMod
 
         public static float GetAxisValue(JoyAxis axis)
         {
-            return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", axis.JoyIndex, axis.AxisIndex)) * 10f;
+            return GetAxisValue( axis.JoyIndex, axis.AxisIndex);
         }
         public static float GetAxisValue(int joyIndex, int axisIndex)
         {

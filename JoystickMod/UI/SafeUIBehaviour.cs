@@ -15,6 +15,17 @@ namespace JoystickMod
         public ILanguage Language;
         GameObject background;
 
+        public static GUIStyle windowStyle = new GUIStyle()
+        {
+            normal = { background = ModResource.GetTexture("window-background"), textColor = Color.white },
+            fontSize = 16,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.UpperCenter,
+            border = new RectOffset(4, 4,30, 4),
+            padding = new RectOffset(12, 12, 40, 12),
+            contentOffset = new Vector2(0, -33)          // -33 = ((30-16)*0.5)-30-(30-40)
+        };
+
         private void Awake()
         {
             this.background = new GameObject("UIBackGround");
@@ -26,6 +37,7 @@ namespace JoystickMod
             LanguageManager.Instance.OnLanguageChanged += (value) => { Language = value; };
             SafeAwake();
         }
+
         void OnGUI()
         {
             if (GameObject.Find("HUD Cam") == null) return;
@@ -46,7 +58,7 @@ namespace JoystickMod
 
 
 
-                this.windowRect = GUILayout.Window(this.windowID, this.windowRect, new GUI.WindowFunction(this.WindowContent), this.windowName);
+                this.windowRect = GUILayout.Window(this.windowID, this.windowRect, new GUI.WindowFunction(this.WindowContent), this.windowName,windowStyle);
             }
             else
             {

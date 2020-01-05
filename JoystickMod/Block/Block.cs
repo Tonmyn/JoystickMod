@@ -73,7 +73,7 @@ namespace JoystickMod
             {
                 if (AxisEnabled && JoystickEnabled)
                 {
-                    SimulateFixedUpdate_Enable();
+                    SimulateFixedUpdateAlways_Enable();
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace JoystickMod
             {
                 if (AxisEnabled && JoystickEnabled)
                 {
-                    SimulateLateUpdate_Enable();
+                    SimulateLateUpdateAlways_Enable();
                 }
             }
         }
@@ -265,7 +265,7 @@ namespace JoystickMod
         public virtual void SafeAwake() { }
         public virtual void OnSimulateStart_Enable() { }
         public virtual void SimulateUpdateAlways_Enable() { }
-        public virtual void SimulateFixedUpdate_Enable() { }
-        public virtual void SimulateLateUpdate_Enable() { }
+        public virtual void SimulateFixedUpdateAlways_Enable() { }
+        public virtual void SimulateLateUpdateAlways_Enable() { }
     }
 }

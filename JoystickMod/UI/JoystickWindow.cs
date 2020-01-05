@@ -2,6 +2,7 @@
 using Modding;
 using Modding.Blocks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,12 +18,6 @@ public class WindowsController : MonoBehaviour
     private BlockBehaviour lastBlock = new BlockBehaviour();
     public static JoyAxis currentJoyAxis = JoyAxis.Default;
     private JoyAxis lastJoyAxis = currentJoyAxis;
-
-    public void Awake()
-    {
-
-
-    }
  
     private void Update()
     {
@@ -191,7 +186,11 @@ public class WindowsController : MonoBehaviour
         fontSize = 12,
         normal = new GUIStyleState() { textColor = new Color(46f / 256f, 163f / 256f, 256f / 256f, 256f / 256f) }
     };
-
+    public static GUIStyle titleStyle3 = new GUIStyle()
+    {
+        fontSize = 12,
+        normal = new GUIStyleState() { textColor = Color.yellow}
+    };
 }
 
 public class JoystickConsoleWindow : SafeUIBehaviour
@@ -254,7 +253,8 @@ class JoystickManagerWindow : SafeUIBehaviour
     public JoyAxisBlockMapperWindow AxisBlockMapperWindow;
 
     private ModDataManager dataManager;
-
+    private JoyAxis lastJoyAxis;
+   
     public override void SafeAwake()
     {
         dataManager = Mod.mod.GetComponent<ModDataManager>();
@@ -287,16 +287,22 @@ class JoystickManagerWindow : SafeUIBehaviour
     protected override void WindowContent(int windowID)
     {
         windowName = Language.ManagerWindow;
+        var value = Input.GetJoystickNames().Length > 0;
 
         GUILayout.BeginVertical();
         {
-            consoleWindow.ShouldShowGUI = AddToggle(Language.ConsoleWindowToggle, consoleWindow.ShouldShowGUI);
-            AxisMapperWindow.ShouldShowGUI = AddToggle(Language.AxisWindowToggle, AxisMapperWindow.ShouldShowGUI);
+            consoleWindow.ShouldShowGUI = AddToggle(Language.ConsoleWindowToggle, consoleWindow.ShouldShowGUI && value);
+            AxisMapperWindow.ShouldShowGUI = AddToggle(Language.AxisWindowToggle, AxisMapperWindow.ShouldShowGUI && value);
             Block.JoystickEnabled = AddToggle(Language.JoystickSwitchToggle, Block.JoystickEnabled);
         }
         GUILayout.EndVertical();
 
-        GUILayout.Label(Language.AxesList+":", WindowsController.titleStyle2);
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label(Language.AxesList + ": ", WindowsController.titleStyle2);
+            if (lastJoyAxis != null) GUILayout.Label(Language.DeleteTipText, WindowsController.titleStyle3);
+        }
+        GUILayout.EndHorizontal();
 
         try
         {
@@ -326,7 +332,30 @@ class JoystickManagerWindow : SafeUIBehaviour
 
             if (GUILayout.Button("x", new GUILayoutOption[] { GUILayout.MaxWidth(rect.width * 0.15f) }))
             {
-                dataManager.RemoveAxis(joyAxis);
+                if (lastJoyAxis == null)
+                {
+                    lastJoyAxis = joyAxis.Copy();
+                    StartCoroutine(delaySeconds(5f, () => lastJoyAxis = null));
+                }
+                else
+                {
+                    if (lastJoyAxis.Guid == joyAxis.Guid)
+                    {
+                        dataManager.RemoveAxis(joyAxis);
+                        lastJoyAxis = null;
+                    }
+                    else
+                    {
+                        lastJoyAxis = joyAxis.Copy();
+                        StartCoroutine(delaySeconds(5f, () => lastJoyAxis = null));
+                    }
+                }
+
+               IEnumerator delaySeconds(float seconds,Action action)
+                {
+                    yield return new WaitForSeconds(seconds);
+                    action?.Invoke();
+                }
             }
 
             if (AxisBlockMapperWindow.ShouldShowGUI == true)
@@ -355,7 +384,7 @@ public class JoyAxisBlockMapperWindow : SafeUIBehaviour
 
     public Block block;
 
-
+    private JoyAxis lastJoyAxis;
     public override void SafeAwake()
     {
         windowRect = new Rect(15f, 100f, 300f, 300f);
@@ -381,7 +410,13 @@ public class JoyAxisBlockMapperWindow : SafeUIBehaviour
         }
         GUILayout.EndVertical();
 
-        GUILayout.Label(Language.Block_Axes + ":", WindowsController.titleStyle2);
+        GUILayout.BeginHorizontal();
+        {
+            GUILayout.Label(Language.Block_Axes + ":", WindowsController.titleStyle2);
+            if (lastJoyAxis != null) GUILayout.Label(Language.DeleteTipText + ":", WindowsController.titleStyle3);
+        }
+        GUILayout.EndHorizontal();
+      
 
         GUILayout.BeginVertical();
         {
@@ -417,9 +452,32 @@ public class JoyAxisBlockMapperWindow : SafeUIBehaviour
 
             if (GUILayout.Button(" x ", new GUILayoutOption[] { GUILayout.MaxWidth(rect.width * 0.3f) }))
             {
-                var list = block.joyAxes.ToList();
-                list.RemoveAll(match => match.Guid == joyAxis.Guid);
-                block.joyAxes = list.ToArray();
+                if (lastJoyAxis == null)
+                {
+                    lastJoyAxis = joyAxis.Copy();
+                    StartCoroutine(delaySeconds(5f, () => lastJoyAxis = null));
+                }
+                else
+                {
+                    if (lastJoyAxis.Guid == joyAxis.Guid)
+                    {
+                        var list = block.joyAxes.ToList();
+                        list.RemoveAll(match => match.Guid == joyAxis.Guid);
+                        block.joyAxes = list.ToArray();
+                        lastJoyAxis = null;
+                    }
+                    else
+                    {
+                        lastJoyAxis = joyAxis.Copy();
+                        StartCoroutine(delaySeconds(5f, () => lastJoyAxis = null));
+                    }
+                }
+
+                IEnumerator delaySeconds(float seconds, Action action)
+                {
+                    yield return new WaitForSeconds(seconds);
+                    action?.Invoke();
+                }
             }
 
         }
@@ -436,7 +494,7 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
     private Texture2D _graphTex;
     private Color[] _resetTex;
 
-    public JoyAxis JoyAxis = JoyAxis.Default;
+    public JoyAxis JoyAxis = JoyAxis.Default.Copy();
 
     public ModDataManager dataManager;
     public override void SafeAwake()

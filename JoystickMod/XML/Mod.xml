@@ -122,6 +122,8 @@ You can control your machine throug JoyStick<!-- FIX: Insert a short description
 		<!-- <Mesh name="some-mesh-name" path="some_mesh_file.obj" /> -->
 		<!-- <Texture name="some-texture-name" path="some_texture_file.png" /> -->
     <Texture name="icon" path="icon.png" />
+
+    <Texture name="window-background" path="UI\window-background.png" />
 	</Resources>
 
 

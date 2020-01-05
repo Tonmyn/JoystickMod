@@ -21,7 +21,7 @@ class PistonScript : Block
         animationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(0f /*+ joyAxis.CurveValue*/, sliderCompress.startLimit), new Keyframe(/*-1f * joyAxis.Sign*/1f*/*joyAxis.*/CurveMax, sliderCompress.newLimit) });
     }
     float targetPos = 0f;
-    public override void SimulateLateUpdate_Enable()
+    public override void SimulateLateUpdateAlways_Enable()
     {
         var value = 0f;
 

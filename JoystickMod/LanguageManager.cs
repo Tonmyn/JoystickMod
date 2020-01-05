@@ -67,7 +67,7 @@ namespace JoystickMod
         string AxisWindowToggle { get; }
         string JoystickSwitchToggle { get; }
         string AxesList { get; }
-
+        string DeleteTipText { get; }
         //Console Window
         string JoystickList { get; }
         string AxisValues { get; }
@@ -109,7 +109,7 @@ namespace JoystickMod
         public string AxisWindowToggle { get; } = "轴编辑器窗口";
         public string JoystickSwitchToggle { get; } = "摇杆总开关";
         public string AxesList { get; } = "轴列表";
-
+        public string DeleteTipText { get; } = "再次点击删除此轴";
         //Console Window
         public string JoystickList { get; } = "摇杆列表";
         public string AxisValues { get; } = "轴输出值列表";
@@ -151,6 +151,7 @@ namespace JoystickMod
         public string AxisWindowToggle { get; } = "Axis Mapper Window";
         public string JoystickSwitchToggle { get; } = "Joystick Switch";
         public string AxesList { get; } = "Axes list";
+        public string DeleteTipText { get; } = "Click again to delete axis";
 
         //Console Window
         public string JoystickList { get; } = "Joystick List";

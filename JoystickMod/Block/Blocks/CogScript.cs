@@ -28,7 +28,7 @@ class CogScript : Block
         cogMotorControllerHinge.Input = GetAxesValueDirection();
     }
     float targetSpeed = 0f;
-    public override void SimulateFixedUpdate_Enable()
+    public override void SimulateFixedUpdateAlways_Enable()
     {
 
         //if (Rigidbody.IsSleeping())
