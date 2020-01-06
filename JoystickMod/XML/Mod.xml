@@ -124,6 +124,10 @@ You can control your machine throug JoyStick<!-- FIX: Insert a short description
     <Texture name="icon" path="icon.png" />
 
     <Texture name="window-background" path="UI\window-background.png" />
+  <Texture name="toggle-normal" path="UI\toggle-normal.png" />
+  <Texture name="toggle-hover" path="UI\toggle-hover.png" />
+  <Texture name="toggle-on-normal" path="UI\toggle-on-normal.png" />
+  <Texture name="toggle-on-hover" path="UI\toggle-on-hover.png" />
 	</Resources>
 
 

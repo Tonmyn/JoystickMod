@@ -15,16 +15,16 @@ namespace JoystickMod
         public ILanguage Language;
         GameObject background;
 
-        public static GUIStyle windowStyle = new GUIStyle()
-        {
-            normal = { background = ModResource.GetTexture("window-background"), textColor = Color.white },
-            fontSize = 16,
-            fontStyle = FontStyle.Bold,
-            alignment = TextAnchor.UpperCenter,
-            border = new RectOffset(4, 4,30, 4),
-            padding = new RectOffset(12, 12, 40, 12),
-            contentOffset = new Vector2(0, -33)          // -33 = ((30-16)*0.5)-30-(30-40)
-        };
+        //public static GUIStyle windowStyle = new GUIStyle()
+        //{
+        //    normal = { background = ModResource.GetTexture("window-background"), textColor = Color.white },
+        //    fontSize = 16,
+        //    fontStyle = FontStyle.Bold,
+        //    alignment = TextAnchor.UpperCenter,
+        //    border = new RectOffset(4, 4,30, 4),
+        //    padding = new RectOffset(12, 12, 40, 12),
+        //    contentOffset = new Vector2(0, -33)          // -33 = ((30-16)*0.5)-30-(30-40)
+        //};
 
         private void Awake()
         {
@@ -58,7 +58,7 @@ namespace JoystickMod
 
 
 
-                this.windowRect = GUILayout.Window(this.windowID, this.windowRect, new GUI.WindowFunction(this.WindowContent), this.windowName,windowStyle);
+                this.windowRect = GUILayout.Window(this.windowID, this.windowRect, new GUI.WindowFunction(this.WindowContent), this.windowName/*, UI.Elements.windowStyle*/);
             }
             else
             {
@@ -70,7 +70,7 @@ namespace JoystickMod
         public abstract bool ShouldShowGUI { get; set; }
 
         public virtual void SafeAwake() { }
-                                                                                                                       
+
         public bool AddToggle(string title, bool value = false)
         {
             var rect = windowRect;
@@ -78,8 +78,8 @@ namespace JoystickMod
             GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
             {
                 GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MaxWidth(rect.width*0.8f), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
-                GUILayout.Space(rect.width * 0.15f);
-                value = GUILayout.Toggle(value, "", new GUILayoutOption[] { GUILayout.Width(rect.width * 0.05f), GUILayout.ExpandWidth(false) });
+                GUILayout.Space(rect.width * 0.1f);
+                value = GUILayout.Toggle(value, "", /*UI.Elements.ToggleStyle,*/ new GUILayoutOption[] { GUILayout.Width(rect.width * 0.1f), GUILayout.ExpandWidth(false) });
             }
             GUILayout.EndHorizontal();
             return value;
@@ -104,6 +104,11 @@ namespace JoystickMod
         }
         public int AddMenu(string title, string[] items, int value = 0)
         {
+            if (items == null || items.Length <= 0)
+            {
+                items = new string[] { "no device" };
+            }
+            
             GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
             {
                 GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MaxWidth(75), GUILayout.MinWidth(75) });

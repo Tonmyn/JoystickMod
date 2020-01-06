@@ -60,11 +60,16 @@
     <Compile Include="Mod.cs" />
     <Compile Include="JoyAxis\JoyAxis.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Elements.cs" />
     <Compile Include="UI\JoystickWindow.cs" />
     <Compile Include="UI\SafeUIBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\icon.png" />
+    <Content Include="Resources\UI\toggle-hover.png" />
+    <Content Include="Resources\UI\toggle-normal.png" />
+    <Content Include="Resources\UI\toggle-on-hover.png" />
+    <Content Include="Resources\UI\toggle-on-normal.png" />
     <Content Include="Resources\UI\window-background.png" />
     <Content Include="XML\Mod.xml" />
   </ItemGroup>
