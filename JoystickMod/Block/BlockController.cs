@@ -20,7 +20,7 @@ namespace JoystickMod
              {(int)BlockType.LargeWheel,typeof(CogScript) },
              {(int)BlockType.CogMediumPowered,typeof(CogScript) },
              {(int)BlockType.WaterCannon,typeof(WaterCannonScript) },
-             //{(int)BlockType.FlyingBlock,typeof(FlyingScript) },
+             {(int)BlockType.FlyingBlock,typeof(FlyingScript) },
         };
 
         public Dictionary<Guid, Modding.Blocks.BlockInfo> dic_BlockInfo = new Dictionary<Guid, Modding.Blocks.BlockInfo>();
