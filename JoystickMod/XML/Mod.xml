@@ -9,7 +9,7 @@
 	<Name>Joystick Mod</Name>
 	<Author>XultimateX</Author> <!-- FIX: Insert your name here. -->
 	<!-- Major.Minor.Build -->
-	<Version>0.1.4</Version>
+	<Version>0.1.5</Version>
 	
 	<Description>
 You can control your machine throug JoyStick<!-- FIX: Insert a short description here. -->
@@ -123,11 +123,11 @@ You can control your machine throug JoyStick<!-- FIX: Insert a short description
 		<!-- <Texture name="some-texture-name" path="some_texture_file.png" /> -->
     <Texture name="icon" path="icon.png" />
 
-    <Texture name="window-background" path="UI\window-background.png" />
+    <!--<Texture name="window-background" path="UI\window-background.png" />
   <Texture name="toggle-normal" path="UI\toggle-normal.png" />
   <Texture name="toggle-hover" path="UI\toggle-hover.png" />
   <Texture name="toggle-on-normal" path="UI\toggle-on-normal.png" />
-  <Texture name="toggle-on-hover" path="UI\toggle-on-hover.png" />
+  <Texture name="toggle-on-hover" path="UI\toggle-on-hover.png" /> -->
 	</Resources>
 
 

@@ -11,24 +11,29 @@ namespace JoystickMod.Blocks
         FlyingController flyingController;
 
         float force = 0f;
-        float f = 85f;
+        float f = 100f;
         public override void OnSimulateStart_Enable()
         {
             flyingController = BB.GetComponent<FlyingController>();
-
+            f = BB.BuildingBlock.GetComponent<FlyingScript>().f;
         }
 
         public override void SimulateUpdateAlways_Enable()
         {
             if (GetAxesValue() != 0)
             {
-                flyingController.spinObj.Rotate(new Vector3(0, 0, -1000) * Time.deltaTime);
-
-                force = 100f * flyingController.SpeedSlider.Value;
+                if (GetAxesValueDirection() != 0f)
+                {
+                    flyingController.spinObj.Rotate(new Vector3(0, 0, -1000) * Time.deltaTime);
+                }
+                   
+                force = 100f * flyingController.SpeedSlider.Value * GetAxesValue();
+                flyingController.Rigidbody.drag = 1.5f;
             }
             else
             {
-                force =f;
+                force =0;
+                flyingController.Rigidbody.drag = 0.5f;
             }
         }
 
@@ -41,9 +46,8 @@ namespace JoystickMod.Blocks
             }
             
             var vector = new Vector3(0, 0,force);
-
-            flyingController.Rigidbody.AddRelativeForce(vector);
-            flyingController.Rigidbody.AddForce(-(flyingController.Rigidbody.velocity * flyingController.dragScaler));
+       
+            flyingController.Rigidbody.AddForce(transform.TransformVector(vector) - (flyingController.Rigidbody.velocity * flyingController.dragScaler));
         }
 
     }

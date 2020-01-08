@@ -58,7 +58,7 @@ namespace JoystickMod
 
 
 
-                this.windowRect = GUILayout.Window(this.windowID, this.windowRect, new GUI.WindowFunction(this.WindowContent), this.windowName/*, UI.Elements.windowStyle*/);
+                this.windowRect = GUILayout.Window(this.windowID, this.windowRect, new GUI.WindowFunction(this.WindowContent), this.windowName);
             }
             else
             {
@@ -79,7 +79,7 @@ namespace JoystickMod
             {
                 GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MaxWidth(rect.width*0.8f), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
                 GUILayout.Space(rect.width * 0.1f);
-                value = GUILayout.Toggle(value, "", /*UI.Elements.ToggleStyle,*/ new GUILayoutOption[] { GUILayout.Width(rect.width * 0.1f), GUILayout.ExpandWidth(false) });
+                value = GUILayout.Toggle(value, "", new GUILayoutOption[] { GUILayout.Width(rect.width * 0.1f), GUILayout.ExpandWidth(false) });
             }
             GUILayout.EndHorizontal();
             return value;
