@@ -54,6 +54,7 @@
     <Compile Include="Block\Blocks\PistonScript.cs" />
     <Compile Include="Block\Blocks\SteeringScript.cs" />
     <Compile Include="Block\Blocks\WaterCannonScript.cs" />
+    <Compile Include="JoyAxis\Joystick.cs" />
     <Compile Include="LanguageManager.cs" />
     <Compile Include="ModDataManager.cs" />
     <Compile Include="ModData.cs" />

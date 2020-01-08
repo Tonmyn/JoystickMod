@@ -19,10 +19,12 @@ namespace JoystickMod
             mod.AddComponent<ModDataManager>();
             mod.AddComponent<BlockController>();
             mod.AddComponent<WindowsController>();
+
+            mod.AddComponent<JoystickManagerWindow>();
             mod.AddComponent<JoystickConsoleWindow>();
             mod.AddComponent<JoyAxisMapperWindow>();
             mod.AddComponent<JoyAxisBlockMapperWindow>();
-            mod.AddComponent<JoystickManagerWindow>();
+
 
             LanguageManager.Instance.transform.SetParent(mod.transform);
             //mod.AddComponent<MapperWindow>();

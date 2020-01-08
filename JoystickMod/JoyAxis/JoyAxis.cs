@@ -1,4 +1,5 @@
-﻿using Modding.Serialization;
+﻿using Modding;
+using Modding.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +12,8 @@ namespace JoystickMod
 {
     public class JoyAxis:Element
     {
+        public static int MouseJoyIndex { get; } = 1024;
+
         [Modding.Serialization.CanBeEmpty]
         public int JoyIndex;
         [Modding.Serialization.CanBeEmpty]
@@ -163,7 +166,24 @@ namespace JoystickMod
         }
         public static float GetAxisValue(int joyIndex, int axisIndex)
         {
-            return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", joyIndex, axisIndex)) * 10f;
+            if (joyIndex == MouseJoyIndex)
+            {
+                float value = 0;
+                
+                switch (axisIndex)
+                {
+                    case 0: value = Input.mousePosition.x; break;
+                    case 1: value = Input.mousePosition.y; break;
+                    case 2: value = Input.GetAxis("Mouse X"); break;
+                    case 3: value = Input.GetAxis("Mouse Y"); break;
+                    default: value = 0f; break;
+                }
+                return value;
+            }
+            else
+            {
+                return Input.GetAxisRaw(string.Format("Joy{0}Axis{1}", joyIndex, axisIndex)) * 10f;
+            }
         }
         public float ConverAxisValueToNormal()
         {

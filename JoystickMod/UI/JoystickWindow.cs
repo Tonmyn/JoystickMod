@@ -72,115 +72,6 @@ public class WindowsController : MonoBehaviour
         return false;
     }
 
-    //public static bool AddToggle(string title, bool value = false)
-    //{
-    //    GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
-    //    {
-    //        GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MinWidth(75f), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
-    //        GUILayout.FlexibleSpace();
-    //        value = GUILayout.Toggle(value, "", new GUILayoutOption[] { GUILayout.Width(50), GUILayout.ExpandWidth(false)});
-    //    }
-    //    GUILayout.EndHorizontal();
-    //    return value;
-    //}
-    //public static float AddSlider(string title, float value, float min = 0f, float max = 1f)
-    //{
-    //    GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
-    //    {
-    //        GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MinWidth(75), GUILayout.ExpandWidth(false), GUILayout.Height(25f) });
-    //        //GUILayout.FlexibleSpace();
-    //        GUILayout.Space(10);
-    //        GUILayout.BeginVertical();
-    //        GUILayout.Space(10);
-    //        value = GUILayout.HorizontalSlider(value, min, max, new GUILayoutOption[] { GUILayout.MinWidth(75), GUILayout.Height(15f) });
-    //        GUILayout.EndVertical();
-    //        //GUILayout.Space(width * 0.05f);
-    //        //GUILayout.FlexibleSpace();
-    //        GUILayout.Space(10);
-    //        value = float.Parse(GUILayout.TextField(value.ToString("#0.000"), new GUILayoutOption[] { GUILayout.MinWidth(50), GUILayout.ExpandWidth(false), GUILayout.Height(25f) }));
-    //    }
-    //    GUILayout.EndHorizontal();
-    //    return value;
-    //}
-    //public static int AddMenu(string title, string[] items, int value = 0)
-    //{
-    //    GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
-    //    {
-    //        GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MaxWidth(75), GUILayout.MinWidth(75) });
-    //        if (GUILayout.Button("<", new GUILayoutOption[] { GUILayout.MaxWidth(30), GUILayout.MinWidth(30) }))
-    //        {
-    //            if (--value < 0)
-    //            {
-    //                value = items.Length - 1;
-    //            }
-    //        }
-    //        GUILayout.Box(items[value]);
-    //        if (GUILayout.Button(">", new GUILayoutOption[] { GUILayout.MaxWidth(30), GUILayout.MinWidth(30) }))
-    //        {
-    //            if (++value > items.Length - 1)
-    //            {
-    //                value = 0;
-    //            }
-    //        }
-    //    }
-    //    GUILayout.EndHorizontal();
-    //    return value;
-    //}
-
-
-    //private static readonly Texture2D RectTexture = new Texture2D(1, 1);
-    //private static readonly GUIStyle RectStyle = new GUIStyle();
-    //private static readonly Color CurrentColor = new Color();
-
-    //internal static void DrawCrossRect(Rect rect, Color color)
-    //{
-    //    DrawRect(new Rect(rect.x, rect.y, rect.width * 0.5f + 1, rect.height * 0.5f), color);
-    //    DrawRect(new Rect(rect.x + rect.width * 0.5f - 1, rect.y, rect.width * 0.5f + 1, rect.height * 0.5f), color);
-    //    DrawRect(new Rect(rect.x, rect.y + rect.height * 0.5f - 1, rect.width * 0.5f + 1, rect.height * 0.5f + 1), color);
-    //    DrawRect(new Rect(rect.x + rect.width * 0.5f - 1, rect.y + rect.height * 0.5f - 1, rect.width * 0.5f + 1, rect.height * 0.5f + 1), color);
-    //}
-    //internal static void DrawRect(Rect position, Color color)
-    //{
-    //    FillRect(new Rect(
-    //        position.x,
-    //        position.y,
-    //        position.width,
-    //        1),
-    //        color);
-
-    //    FillRect(new Rect(
-    //        position.x,
-    //        position.y + position.height - 1,
-    //        position.width,
-    //        1),
-    //        color);
-
-    //    FillRect(new Rect(
-    //        position.x,
-    //        position.y,
-    //        1,
-    //        position.height),
-    //        color);
-
-    //    FillRect(new Rect(
-    //        position.x + position.width - 1,
-    //        position.y,
-    //        1,
-    //        position.height),
-    //        color);
-    //}
-    //internal static void FillRect(Rect position, Color color)
-    //{
-    //    if (color != CurrentColor)
-    //    {
-    //        RectTexture.SetPixel(0, 0, color);
-    //        RectTexture.Apply();
-
-    //        RectStyle.normal.background = RectTexture;
-    //    }
-    //    GUI.Box(position, GUIContent.none, RectStyle);
-    //}
-
     public static GUIStyle titleStyle2 = new GUIStyle()
     {
         fontSize = 12,
@@ -197,14 +88,24 @@ public class JoystickConsoleWindow : SafeUIBehaviour
 {
     public override bool ShouldShowGUI { get; set; } = false;
 
-    
+    private List<Joystick> joysticks = new List<Joystick>();
+    private List<string> joystickNamesList = new List<string>();
     private List<string> AxisValues = new List<string>();
+    private int selectedIndex = 0;
     private int joyIndex = 0;
 
     public override void SafeAwake()
     {
         windowRect = new Rect(15f, 100f, 356f, 180f);
+        Mod.mod.GetComponent<JoystickManagerWindow>().OnJoysticksChanged += refreshJoystick;
+        refreshJoystick(Mod.mod.GetComponent<JoystickManagerWindow>().Joysticks);
+    }
 
+    public void refreshJoystick(List<Joystick> joysticks)
+    {
+        joystickNamesList.Clear();
+        this.joysticks = joysticks;
+        joysticks.ForEach((joy) => { joystickNamesList.Add(joy.Name); Debug.Log(joy); });
     }
 
     protected override void WindowContent(int windowID)
@@ -220,8 +121,8 @@ public class JoystickConsoleWindow : SafeUIBehaviour
                 GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
-
-            joyIndex = GUILayout.SelectionGrid(joyIndex, Input.GetJoystickNames(), 1);
+            selectedIndex = GUILayout.SelectionGrid(selectedIndex, /*Input.GetJoystickNames()*/joystickNamesList.ToArray(), 1);
+            joyIndex = joysticks[selectedIndex].Index;
             GUILayout.Space(10);
 
             GUILayout.BeginHorizontal();
@@ -247,6 +148,9 @@ public class JoystickConsoleWindow : SafeUIBehaviour
 class JoystickManagerWindow : SafeUIBehaviour
 {
     public override bool ShouldShowGUI { get; set; } = false;
+    public List<Joystick> Joysticks = new List<Joystick>();
+
+    public event Action<List<Joystick>> OnJoysticksChanged;
 
     public JoystickConsoleWindow consoleWindow;
     public JoyAxisMapperWindow AxisMapperWindow;
@@ -254,22 +158,28 @@ class JoystickManagerWindow : SafeUIBehaviour
 
     private ModDataManager dataManager;
     private JoyAxis lastJoyAxis;
+    private string[] lastjoystickNames;
    
     public override void SafeAwake()
     {
         dataManager = Mod.mod.GetComponent<ModDataManager>();
 
-
         windowRect = new Rect(50, 50, 300, dataManager.ModData.joyAxes.Length * 30f + 150f);
 
-        consoleWindow = Mod.mod.GetComponent<JoystickConsoleWindow>();
-        AxisMapperWindow = Mod.mod.GetComponent<JoyAxisMapperWindow>();
-        AxisBlockMapperWindow = Mod.mod.GetComponent<JoyAxisBlockMapperWindow>();
+        refreshJoysticks();
     }
 
 
     void Update()
     {
+        if (consoleWindow == null || AxisMapperWindow == null || AxisBlockMapperWindow == null)
+        {
+            consoleWindow = Mod.mod.GetComponent<JoystickConsoleWindow>();
+            AxisMapperWindow = Mod.mod.GetComponent<JoyAxisMapperWindow>();
+            AxisBlockMapperWindow = Mod.mod.GetComponent<JoyAxisBlockMapperWindow>();
+            return;
+        }
+
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F10))
         {
             if (WindowsController.IsBuilding() && !StatMaster.inMenu)
@@ -281,13 +191,30 @@ class JoystickManagerWindow : SafeUIBehaviour
             {
                 consoleWindow.ShouldShowGUI = false;
             }
+
+            Joysticks.ForEach(joy => Debug.Log(joy.ToString()));
         }
+
+        //if (!lastjoystickNames.Equals(Input.GetJoystickNames()))
+        //{
+        //    refreshJoysticks();
+        //}
+    }
+
+    void refreshJoysticks()
+    {
+        lastjoystickNames = Input.GetJoystickNames();
+        Joysticks.Clear();
+        int index = 0;
+        lastjoystickNames.ToList().ForEach((str) => Joysticks.Add(new Joystick(str, index++)));
+        Joysticks.Add(new Joystick("Mouse", 1024));
+        OnJoysticksChanged?.Invoke(Joysticks);
     }
 
     protected override void WindowContent(int windowID)
     {
         windowName = Language.ManagerWindow;
-        var value = Input.GetJoystickNames().Length > 0;
+        var value =Joysticks.Count > 0;
 
         GUILayout.BeginVertical();
         {
@@ -496,7 +423,11 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
 
     public JoyAxis JoyAxis = JoyAxis.Default.Copy();
 
-    public ModDataManager dataManager;
+    private ModDataManager dataManager;
+    private List<Joystick> joysticks = new List<Joystick>();
+    private List<string> joystickNamesList = new List<string>();
+    private int selectedIndex = 0;
+
     public override void SafeAwake()
     {
         windowRect = new Rect(15f, 100f, 300f, 300f); 
@@ -504,8 +435,16 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
         WindowsController.OnChangedJoyAxis += (value) => { JoyAxis = value.Copy(); };
 
         dataManager = Mod.mod.GetComponent<ModDataManager>();
+        Mod.mod.GetComponent<JoystickManagerWindow>().OnJoysticksChanged += refreshJoystick;
+        refreshJoystick(Mod.mod.GetComponent<JoystickManagerWindow>().Joysticks);
     }
 
+    public void refreshJoystick(List<Joystick> joysticks)
+    {
+        joystickNamesList.Clear();
+        this.joysticks = joysticks;
+        joysticks.ForEach((joy) => { joystickNamesList.Add(joy.Name); Debug.Log(joy); });
+    }
 
     protected override void WindowContent(int windowID)
     {
@@ -546,7 +485,9 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
 
         GUILayout.BeginVertical();
         {
-            JoyAxis.JoyIndex = AddMenu(Language.Joystick, Input.GetJoystickNames(), JoyAxis.JoyIndex);
+            //JoyAxis.JoyIndex = AddMenu(Language.Joystick, /*Input.GetJoystickNames()*/joystickNamesList.ToArray(), JoyAxis.JoyIndex);
+            selectedIndex = AddMenu(Language.Joystick, /*Input.GetJoystickNames()*/joystickNamesList.ToArray(), selectedIndex);
+            JoyAxis.JoyIndex = joysticks[selectedIndex].Index;
             JoyAxis.AxisIndex = AddMenu(Language.Axis, new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14" }, JoyAxis.AxisIndex);
 
             JoyAxis.Invert = AddToggle(Language.Invert, JoyAxis.Invert);
