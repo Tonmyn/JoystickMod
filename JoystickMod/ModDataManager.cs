@@ -37,9 +37,9 @@ namespace JoystickMod
             //    Debug.Log(ModData.ToString());
             //}
 
-            Debug.Log(Input.GetAxis("Mouse X"));
-            Debug.Log(Input.mousePosition.ToString());
-            UnityEngine.Input.deviceOrientation.
+            //Debug.Log(Input.GetAxis("Mouse X"));
+            //Debug.Log(Input.mousePosition.ToString());
+
         }
 
         public void AddAxis(JoyAxis joyAxis)
