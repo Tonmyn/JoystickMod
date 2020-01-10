@@ -172,8 +172,8 @@ namespace JoystickMod
                 
                 switch (axisIndex)
                 {
-                    case 0: value = Input.mousePosition.x; break;
-                    case 1: value = Input.mousePosition.y; break;
+                    case 0: value = (Input.mousePosition.x/(Screen.width*0.5f))-1f; break;
+                    case 1: value = (Input.mousePosition.y/(Screen.height*0.5f))-1f; break;
                     case 2: value = Input.GetAxis("Mouse X"); break;
                     case 3: value = Input.GetAxis("Mouse Y"); break;
                     default: value = 0f; break;
