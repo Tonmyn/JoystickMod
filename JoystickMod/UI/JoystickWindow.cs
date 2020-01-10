@@ -105,7 +105,7 @@ public class JoystickConsoleWindow : SafeUIBehaviour
     {
         joystickNamesList.Clear();
         this.joysticks = joysticks;
-        joysticks.ForEach((joy) => { joystickNamesList.Add(joy.Name); Debug.Log(joy); });
+        joysticks.ForEach((joy) => { joystickNamesList.Add(joy.Name); /*Debug.Log(joy);*/ });
     }
 
     protected override void WindowContent(int windowID)
@@ -192,7 +192,7 @@ class JoystickManagerWindow : SafeUIBehaviour
                 consoleWindow.ShouldShowGUI = false;
             }
 
-            Joysticks.ForEach(joy => Debug.Log(joy.ToString()));
+            //Joysticks.ForEach(joy => Debug.Log(joy.ToString()));
         }
 
         //if (!lastjoystickNames.Equals(Input.GetJoystickNames()))
@@ -443,7 +443,7 @@ public class JoyAxisMapperWindow : SafeUIBehaviour
     {
         joystickNamesList.Clear();
         this.joysticks = joysticks;
-        joysticks.ForEach((joy) => { joystickNamesList.Add(joy.Name); Debug.Log(joy); });
+        joysticks.ForEach((joy) => { joystickNamesList.Add(joy.Name);/* Debug.Log(joy); */});
     }
 
     protected override void WindowContent(int windowID)
