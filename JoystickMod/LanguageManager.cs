@@ -7,7 +7,7 @@ using Modding;
 using UnityEngine;
 
 namespace JoystickMod
-{
+{ 
     public class LanguageManager : SingleInstance<LanguageManager>
     {
         public override string Name { get; } = "Language Manager";
@@ -20,8 +20,9 @@ namespace JoystickMod
         public ILanguage CurrentLanguage { get; private set; } = new English();
         Dictionary<string, ILanguage> Dic_Language = new Dictionary<string, ILanguage>
     {
-        { "简体中文",new Chinese()},
-        { "English",new English()},
+            { "简体中文",new Chinese()},
+            { "English",new English()},
+            { "日本語",new Japanese()},
     };
 
         void Awake()
@@ -137,7 +138,6 @@ namespace JoystickMod
         public string CurveMin { get; } = "轴曲线最小值";
         public string Block_Axes { get; } = "零件的轴列表";
     }
-
     public class English : ILanguage
     {
         //Windows
@@ -179,5 +179,47 @@ namespace JoystickMod
         public string CurveMax { get; } = "Curve Max";
         public string CurveMin { get; } = "Curve Min";
         public string Block_Axes { get; } = "Block's Axes";
+    }
+    public class Japanese : ILanguage
+    {
+        //Windows
+        public string ManagerWindow { get; } = "ジョイスティックmod Ctrl+F10";
+        public string ConsoleWindow { get; } = "外部機器制御";
+        public string AxisWindow { get; } = "入力設定";
+        public string BlockWindow { get; } = "個別ブロック設定";
+
+        //Manager Window
+        public string ConsoleWindowToggle { get; } = "外部機器制御ウインドウを開く";
+        public string AxisWindowToggle { get; } = "入力設定ウインドウを開く";
+        public string JoystickSwitchToggle { get; } = "外部機器を有効化する";
+        public string AxesList { get; } = "設定一覧";
+        public string DeleteTipText { get; } = "削除するにはもう一度xを押す";
+
+        //Console Window
+        public string JoystickList { get; } = "外部機器一覧";
+        public string AxisValues { get; } = "入力の強さ";
+        public string Axis { get; } = "入力";
+        public string Value { get; } = "数値";
+
+        //Axis Window
+        public string OutputValue { get; } = "出力の数値";
+        public string AxisName { get; } = "入力設定の名前";
+        public string Save { get; } = "保存";
+        public string SaveAs { get; } = "新規保存";
+        public string Joystick { get; } = "外部機器";
+        public string Invert { get; } = "反転";
+        public string Sensitivity { get; } = "感度";
+        public string Curvature { get; } = "なめらかさ";
+        public string Deadzone { get; } = "無反応範囲";
+        public string Lerp { get; } = "補完";
+        public string OffsetX { get; } = "基準点の位置 X";
+        public string OffsetY { get; } = "基準点の位置 Y";
+
+        //Block Window
+        public string BlockAxisEnabled { get; } = "入力設定を反映する";
+        public string BlockAxisInvert { get; } = "反転";
+        public string CurveMax { get; } = "動作の最大値";
+        public string CurveMin { get; } = "動作の最小値";
+        public string Block_Axes { get; } = "参照する設定";
     }
 }
