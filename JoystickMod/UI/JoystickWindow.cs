@@ -346,7 +346,7 @@ public class JoyAxisBlockMapperWindow : SafeUIBehaviour
             block.Invert = AddToggle(Language.BlockAxisInvert, block.Invert);
             block.CurveMax = AddSlider(Language.CurveMax, block.CurveMax, 0, 3f);
             block.CurveMin = AddSlider(Language.CurveMin, block.CurveMin, -3f, 0);
-            block.Lerp = AddSlider(Language.Lerp, block.Lerp);
+            block.Lerp = AddSlider(Language.Lerp, block.Lerp,0f,5f);
         }
         GUILayout.EndVertical();
 

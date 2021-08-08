@@ -187,11 +187,11 @@ namespace JoystickMod
         }
         public float ConverAxisValueToNormal()
         {
-            if (-0.01f > CurveValue)
+            if (-0.01f >= CurveValue)
             {
                 return -1f;
             }
-            else if (CurveValue > 0.01f)
+            else if (CurveValue >= 0.01f)
             {
                 return 1f;
             }

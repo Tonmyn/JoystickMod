@@ -113,11 +113,11 @@ namespace JoystickMod
                 d += a.DirectionValue;
             }
 
-            if (-0.01f > d)
+            if (-0.01f >= d)
             {
                 return -1f;
             }
-            else if (d > 0.01f)
+            else if (d >= 0.01f)
             {
                 return 1f;
             }
