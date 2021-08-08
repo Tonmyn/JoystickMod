@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Block = JoystickMod.Block;
@@ -121,7 +122,7 @@ public class JoystickConsoleWindow : SafeUIBehaviour
                 GUILayout.FlexibleSpace();
             }
             GUILayout.EndHorizontal();
-            selectedIndex = GUILayout.SelectionGrid(selectedIndex, /*Input.GetJoystickNames()*/joystickNamesList.ToArray(), 1);
+            selectedIndex = GUILayout.SelectionGrid(selectedIndex, /*Input.GetJoystickNames()*/joystickNamesList.ToArray(), 1,new GUILayoutOption[] { GUILayout.MaxWidth(450)});
             joyIndex = joysticks[selectedIndex].Index;
             GUILayout.Space(10);
 
@@ -203,10 +204,10 @@ class JoystickManagerWindow : SafeUIBehaviour
 
     void refreshJoysticks()
     {
-        lastjoystickNames = Input.GetJoystickNames();
+        lastjoystickNames =  Input.GetJoystickNames();
         Joysticks.Clear();
         int index = 0;
-        lastjoystickNames.ToList().ForEach((str) => Joysticks.Add(new Joystick(str, index++)));
+        lastjoystickNames.ToList().ForEach((str) => Joysticks.Add(new Joystick(Regex.Replace(str, "  ", ""), index++)));
         Joysticks.Add(new Joystick("Mouse", 1024));
         OnJoysticksChanged?.Invoke(Joysticks);
     }
