@@ -204,10 +204,22 @@ class JoystickManagerWindow : SafeUIBehaviour
 
     void refreshJoysticks()
     {
+        var ignorStr = new List<string>() { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
+
         lastjoystickNames =  Input.GetJoystickNames();
         Joysticks.Clear();
         int index = 0;
-        lastjoystickNames.ToList().ForEach((str) => Joysticks.Add(new Joystick(Regex.Replace(str, "  ", ""), index++)));
+        //lastjoystickNames.ToList().ForEach((str) => Joysticks.Add(new Joystick(Regex.Replace(Regex.Replace(str, "  ", ""), "[\n]", " "), index++)));
+        foreach (var str in lastjoystickNames)
+        {
+            var exist = false;
+            ignorStr.ForEach(match => exist = str.Contains(match));
+            if (!exist)
+            {
+                Joysticks.Add(new Joystick(Regex.Replace(Regex.Replace(str, "  ", ""), "[\n]", " "), index++));
+            }
+        }
+
         Joysticks.Add(new Joystick("Mouse", 1024));
         OnJoysticksChanged?.Invoke(Joysticks);
     }

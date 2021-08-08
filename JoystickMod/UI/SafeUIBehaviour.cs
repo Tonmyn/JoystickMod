@@ -108,25 +108,33 @@ namespace JoystickMod
             {
                 items = new string[] { "no device" };
             }
-            
+
             GUILayout.BeginHorizontal(new GUILayoutOption[] { GUILayout.Height(30) });
             {
-                GUILayout.Label(title, new GUILayoutOption[] { GUILayout.MaxWidth(75), GUILayout.MinWidth(75) });
-                if (GUILayout.Button("<", new GUILayoutOption[] { GUILayout.MaxWidth(30), GUILayout.MinWidth(30) }))
+                GUILayout.Label(title, new GUILayoutOption[] { GUILayout.Width(75) });
+                GUILayout.BeginVertical();
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("<", new GUILayoutOption[] { GUILayout.Width(24) }))
                 {
                     if (--value < 0)
                     {
                         value = items.Length - 1;
                     }
                 }
-                GUILayout.Box(items[value]);
-                if (GUILayout.Button(">", new GUILayoutOption[] { GUILayout.MaxWidth(30), GUILayout.MinWidth(30) }))
+                GUILayout.FlexibleSpace();
+                GUILayout.EndVertical();
+                GUILayout.Box(items[value], new GUILayoutOption[] { GUILayout.Width(180), GUILayout.Height(24) });
+                GUILayout.BeginVertical();
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button(">", new GUILayoutOption[] { GUILayout.Width(24) }))
                 {
                     if (++value > items.Length - 1)
                     {
                         value = 0;
                     }
                 }
+                GUILayout.FlexibleSpace();
+                GUILayout.EndVertical();
             }
             GUILayout.EndHorizontal();
             return value;
